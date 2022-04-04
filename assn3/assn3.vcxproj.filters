@@ -15,6 +15,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bomb.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="land.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="spriteGroup.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="tank.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

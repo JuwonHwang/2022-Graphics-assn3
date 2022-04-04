@@ -152,6 +152,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bomb.h" />
+    <ClInclude Include="collision.h" />
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="land.h" />
+    <ClInclude Include="shapes.h" />
+    <ClInclude Include="sprite.h" />
+    <ClInclude Include="spriteGroup.h" />
+    <ClInclude Include="tank.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
