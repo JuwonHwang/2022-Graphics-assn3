@@ -45,7 +45,7 @@ void renderScene(void)
         camera.View(tank->getPosition(), tank->getbarrelRPY());
         break;
     case TOP_VIEW:
-
+        camera.View(tank->getPosition(), tank->getRPY());
         break;
     default:
         break;

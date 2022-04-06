@@ -55,6 +55,18 @@ public:
 			);
 			break;
 		case TOP_VIEW:
+			glOrtho(-3, 3, -3, 3, -10, 10);
+
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+
+			glScalef(SCALE, SCALE, SCALE);
+
+			gluLookAt(
+				0,10,0,
+				0,0,0,
+				0,0,-1
+			);
 			break;
 		default:
 			break;

@@ -71,6 +71,7 @@ public:
         colorScale = 0.1f;
         glColor3f(getColor()[0] * colorScale, getColor()[1] * colorScale, getColor()[2] * colorScale);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glLineWidth(2.0);
         glBegin(GL_POLYGON);
         for (size_t i = 0; i < vertices.size(); i++) {
             glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
