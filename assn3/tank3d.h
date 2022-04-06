@@ -28,6 +28,7 @@ public:
 			addSprite3D(wheel);
 		}
 		
-		rotate(glm::vec3(0.5f, 0, 0));
+		rotate(glm::vec3(0, 0, 0));
+		move(Position(0, 2, 0));
 	}
 };

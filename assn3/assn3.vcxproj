@@ -156,6 +156,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="colors.h" />
+    <ClInclude Include="ground.h" />
     <ClInclude Include="land.h" />
     <ClInclude Include="obj.h" />
     <ClInclude Include="shapes.h" />

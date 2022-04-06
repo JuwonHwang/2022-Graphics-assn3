@@ -72,7 +72,6 @@ public:
             glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
         }
         glEnd();
-
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->draw3d();
         }

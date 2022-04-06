@@ -9,17 +9,23 @@
 #include "collision.h"
 #include "sprite3d.h"
 #include "tank3d.h"
+#include "ground.h"
+#include "camera.h"
 
 bool playing = true;
 std::vector<Sprite3D*> allGroups = {};
 bool all_pass = false;
 bool all_fail = false;
 
+Camera camera;
 Sprite3D* cube;
 Tank3D* tank;
+Ground* ground;
+
 void init(void) {
     //cube = new Sprite3D("Cube", grey, Position(0, 0, 0), { &allGroups }, "resource/body.obj");
     tank = new Tank3D("tank", grey, Position(0, 0, 0), { &allGroups }, "");
+    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 10,10 });
 }
 
 void renderScene(void)
@@ -30,12 +36,8 @@ void renderScene(void)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glMatrixMode(GL_PROJECTION);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glFrustum(-1.0f, 1.0f, -1.5f, 1.5f, 1.0f, 20.0f);
-    glScalef(SCALE, SCALE, SCALE);
+    
+    camera.View(tank->getPosition());
     
     glPushMatrix();
     for (size_t i = 0; i < allGroups.size(); i++)
@@ -43,15 +45,6 @@ void renderScene(void)
         allGroups[i]->draw3d();
     }
     glPopMatrix();
-    //glTranslatef(0, 0, 0.01);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //colorScale = 0.2;
-    //glPushMatrix();
-    //for (size_t i = 0; i < allGroups.size(); i++)
-    //{
-    //    allGroups[i]->draw3d();
-    //}
-    //glPopMatrix();
     glFlush();
 }
 
@@ -85,22 +78,22 @@ void keyboard(unsigned char key, int x, int y) {
     case ' ':
         break;
     case 'q':
-        tank->rotate(Position(0, 0, -1));
+        ground->rotate(Position(0, 0, -1));
         break;
     case 'w':
-        tank->rotate(Position(0, 0, 1));
+        ground->rotate(Position(0, 0, 1));
         break;
     case 'e':
-        tank->rotate(Position(-1, 0, 0));
+        ground->rotate(Position(-1, 0, 0));
         break;
     case 'a':
-        tank->rotate(Position(1, 0, 0));
+        ground->rotate(Position(1, 0, 0));
         break;
     case 's':
-        tank->rotate(Position(0, -1, 0));
+        ground->rotate(Position(0, -1, 0));
         break;
     case 'd':
-        tank->rotate(Position(0, 1, 0));
+        ground->rotate(Position(0, 1, 0));
         break;
     case 'f':
         break;
