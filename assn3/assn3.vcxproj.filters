@@ -39,6 +39,18 @@
     <ClInclude Include="tank.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="obj.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite3d.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="tank3d.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt">

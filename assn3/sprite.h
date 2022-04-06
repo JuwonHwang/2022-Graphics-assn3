@@ -9,6 +9,8 @@
 #include <set>
 //#define COLLISION
 
+#define SCALE (0.1f)
+
 #define PI (3.14159265359f)
 #define PI2 (6.28318530718f)
 
@@ -121,6 +123,10 @@ private:
     Color color; // 색상
 
 public:
+    ColoredSprite() {
+
+    }
+
     ColoredSprite(Color _color, std::string _name, Position _position) : Sprite(_name, _position) {
         color = _color;
     }
@@ -160,20 +166,11 @@ public:
         transform = glm::translate(transform, _position);
         transform = glm::rotate(transform, _rotation + getRotation(), glm::vec3(0.0f, 0.0f, 1.0f));
         transform = glm::translate(transform, getPosition());
-#ifdef COLLISION
-        for (size_t i = 0; i < collisionMask.size(); i++)
-        {
-            glm::vec4 drawPosition = transform * glm::vec4(collisionMask[i], 1);
-            glVertex3f(drawPosition[0], drawPosition[1], drawPosition[1]);
-        }
-#endif
-#ifndef COLLISION
         for (size_t i = 0; i < vertices.size(); i++)
         {
             glm::vec4 drawPosition = transform * glm::vec4(vertices[i], 1);
             glVertex3f(drawPosition[0], drawPosition[1], drawPosition[1]);
         }
-#endif // !COLLISION
         glEnd();
     }
 
