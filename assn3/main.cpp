@@ -25,7 +25,7 @@ Ground* ground;
 void init(void) {
     //cube = new Sprite3D("Cube", grey, Position(0, 0, 0), { &allGroups }, "resource/body.obj");
     tank = new Tank3D("tank", grey, Position(0, 0, 0), { &allGroups }, "");
-    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 10,10 });
+    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 40,40 });
 }
 
 void renderScene(void)
@@ -37,7 +37,7 @@ void renderScene(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
-    camera.View(tank->getPosition());
+    camera.View(tank->getPosition(), tank->getRPY());
     
     glPushMatrix();
     for (size_t i = 0; i < allGroups.size(); i++)
@@ -55,16 +55,16 @@ void specialkeyboard(int key, int x, int y) {
     }
     switch (key) {
     case GLUT_KEY_LEFT:
-        tank->move(Position(-1.0f, 0.0f, 0.0f));
+        tank->rotate(Position(0.0f, 5, 0.0f));
         break;
     case GLUT_KEY_RIGHT:
-        tank->move(Position(1.0f, 0.0f, 0.0f));
+        tank->rotate(Position(0.0f, -5, 0.0f));
         break;
     case GLUT_KEY_UP:
-        tank->move(Position(0.0f, 0.0f, -1.0f));
+        tank->forward(-1);
         break;
     case GLUT_KEY_DOWN:
-        tank->move(Position(0.0f, 0.0f, 1.0f));
+        tank->forward(1);
         break;
     }
     glutPostRedisplay();

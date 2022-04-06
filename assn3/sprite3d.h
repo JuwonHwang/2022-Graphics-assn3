@@ -42,18 +42,22 @@ public:
         subSprite3Ds.push_back(sub);
     }
 
+    virtual glm::vec3 getRPY() {
+        return { roll, yaw, pitch };
+    }
+
     virtual void rotate(glm::vec3 rpy) {
         roll += rpy.x;
-        pitch += rpy.y;
-        yaw += rpy.z;
+        yaw += rpy.y;
+        pitch += rpy.z;
     }
 
     virtual void draw3d() {
         glPushMatrix();
         glTranslatef(getPosition().x, getPosition().y, getPosition().z);
-        glRotatef(roll, 0.0f, 1.0f, 0.0f);
-        glRotatef(pitch, 1.0f, 0.0f, 0.0f);
-        glRotatef(yaw, 0.0f, 0.0f, 1.0f);
+        glRotatef(roll, 1.0f, 0.0f, 0.0f);
+        glRotatef(pitch, 0.0f, 0.0f, 1.0f);
+        glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         
         colorScale = 1.0f;
         glColor3f(getColor()[0] * colorScale, getColor()[1] * colorScale, getColor()[2] * colorScale);

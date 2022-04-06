@@ -31,4 +31,8 @@ public:
 		rotate(glm::vec3(0, 0, 0));
 		move(Position(0, 2, 0));
 	}
+
+	void forward(float speed) {
+		move({ speed * glm::sin(getRPY().y * PI / 180), 0, speed * glm::cos(getRPY().y * PI / 180) });
+	}
 };
