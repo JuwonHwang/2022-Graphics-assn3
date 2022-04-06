@@ -48,4 +48,12 @@ public:
 			barrel->rotate(glm::vec3(speed, 0, 0));
 		}
 	}
+
+	glm::vec3 getbarrelRPY() {
+		Transform transform = Transform(1.0f);
+		transform = glm::rotate(transform, (getRPY().y + upperbody->getRPY().y) * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+		transform = glm::rotate(transform, barrel->getRPY().x * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
+		glm::vec4 tip = transform * glm::vec4(0, 0, 1, 1);
+		return tip;
+	}
 };

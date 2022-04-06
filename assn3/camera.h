@@ -49,8 +49,8 @@ public:
 			glScalef(SCALE, SCALE, SCALE);
 
 			gluLookAt(
-				target.x, target.y + 10, target.z,
-				target.x, target.y + 10, target.z + 20,
+				target.x + rpy.x * 2, target.y + 3.2 - rpy.y * 3, target.z + rpy.z * 2,
+				target.x - rpy.x * 6, target.y + 2.2 - rpy.y * 5, target.z - rpy.z * 6,
 				up.x, up.y, up.z
 			);
 			break;
@@ -72,11 +72,15 @@ public:
 			mode = TOP_VIEW;
 			break;
 		case TOP_VIEW:
-			break;
 			mode = THIRD_PERSON;
+			break;
 		default:
 			break;
 		}
+	}
+
+	cmode getMode() {
+		return mode;
 	}
 
 };

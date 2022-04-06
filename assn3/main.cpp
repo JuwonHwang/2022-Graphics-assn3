@@ -36,9 +36,20 @@ void renderScene(void)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    
-    camera.View(tank->getPosition(), tank->getRPY());
-    
+
+    switch (camera.getMode()) {
+    case THIRD_PERSON:
+        camera.View(tank->getPosition(), tank->getRPY());
+        break;
+    case FIRST_PERSON:
+        camera.View(tank->getPosition(), tank->getbarrelRPY());
+        break;
+    case TOP_VIEW:
+
+        break;
+    default:
+        break;
+    }
     glPushMatrix();
     for (size_t i = 0; i < allGroups.size(); i++)
     {
@@ -94,6 +105,9 @@ void keyboard(unsigned char key, int x, int y) {
         tank->rotateHead(-5);
         break;
     case 'f':
+        break;
+    case 'v':
+        camera.ChangeMode();
         break;
     }
     glutPostRedisplay();
