@@ -78,22 +78,20 @@ void keyboard(unsigned char key, int x, int y) {
     case ' ':
         break;
     case 'q':
-        ground->rotate(Position(0, 0, -1));
-        break;
-    case 'w':
-        ground->rotate(Position(0, 0, 1));
         break;
     case 'e':
-        ground->rotate(Position(-1, 0, 0));
         break;
-    case 'a':
-        ground->rotate(Position(1, 0, 0));
+    case 'w':
+        tank->rotateBarrel(5);
         break;
     case 's':
-        ground->rotate(Position(0, -1, 0));
+        tank->rotateBarrel(-5);
+        break;
+    case 'a':
+        tank->rotateHead(5);
         break;
     case 'd':
-        ground->rotate(Position(0, 1, 0));
+        tank->rotateHead(-5);
         break;
     case 'f':
         break;

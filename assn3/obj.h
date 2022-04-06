@@ -13,7 +13,7 @@ bool loadOBJ(
 	std::vector<glm::vec2>& out_uvs,
 	std::vector<glm::vec3>& out_normals
 ) {
-	std::cout << "Loading OBJ file " << path << std::endl;
+	//std::cout << "Loading OBJ file " << path << std::endl;
 
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	std::vector<glm::vec3> temp_vertices;

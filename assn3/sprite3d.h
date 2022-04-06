@@ -27,7 +27,7 @@ public:
             loadShape(path);
 
         groups = _groups;
-        std::cout << getName() << " - group size : " << _groups.size() << std::endl;
+        //std::cout << getName() << " - group size : " << _groups.size() << std::endl;
         for (size_t i = 0; i < _groups.size(); i++) {
             _groups[i]->push_back(this);
         }
