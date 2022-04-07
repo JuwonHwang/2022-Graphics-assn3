@@ -35,8 +35,8 @@ public:
 			glScalef(SCALE, SCALE, SCALE);
 
 			gluLookAt(
-				target.x + 20 * glm::sin(rpy.y * PI / 180), 10 + target.y, target.z + 20 * glm::cos(rpy.y * PI / 180),
-				target.x, target.y, target.z,
+				target.x + 30 * glm::sin(rpy.y * PI / 180), 10 + target.y, target.z + 30 * glm::cos(rpy.y * PI / 180),
+				target.x, target.y + 5, target.z,
 				up.x, up.y, up.z
 			);
 			break;
