@@ -13,18 +13,21 @@
 #include "camera.h"
 
 bool playing = true;
-std::vector<Sprite3D*> allGroups = {};
 bool all_pass = false;
 bool all_fail = false;
 
 Camera camera;
 Sprite3D* cube;
 Tank3D* tank;
+Tank3D* enemy;
 Ground* ground;
 
 void init(void) {
     //cube = new Sprite3D("Cube", grey, Position(0, 0, 0), { &allGroups }, "resource/body.obj");
-    tank = new Tank3D("tank", grey, Position(0, 0, 0), { &allGroups }, "");
+    tank = new Tank3D("tank", grey, Position(0, 0, 20), { &allGroups });
+    enemy = new Tank3D("enemy", grey, Position(0, 0, -20), { &allGroups });
+    enemy->setAuto(true);
+    enemy->rotate(glm::vec3(0, 180, 0));
     ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 40,40 });
 }
 
@@ -53,7 +56,9 @@ void renderScene(void)
     glPushMatrix();
     for (size_t i = 0; i < allGroups.size(); i++)
     {
-        allGroups[i]->draw3d();
+        if (allGroups[i] != NULL) {
+            allGroups[i]->draw3d();
+        }
     }
     glPopMatrix();
     glFlush();
@@ -66,10 +71,10 @@ void specialkeyboard(int key, int x, int y) {
     }
     switch (key) {
     case GLUT_KEY_LEFT:
-        tank->rotate(Position(0.0f, 5, 0.0f));
+        tank->turn(1);
         break;
     case GLUT_KEY_RIGHT:
-        tank->rotate(Position(0.0f, -5, 0.0f));
+        tank->turn(-1);
         break;
     case GLUT_KEY_UP:
         tank->forward(-1);
@@ -87,6 +92,7 @@ void keyboard(unsigned char key, int x, int y) {
     }
     switch (key) {
     case ' ':
+        tank->shoot(&allGroups);
         break;
     case 'q':
         break;
@@ -114,11 +120,20 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 void timer(int value) {
-    std::vector<Sprite*> new_all;
-    new_all.insert(new_all.end(), allGroups.begin(), allGroups.end());
-    for (size_t i = 0; i < new_all.size(); i++)
+    for (size_t i = 0; i < allGroups.size(); i++)
     {
-        new_all[i]->update();
+        if (allGroups[i] != NULL) {
+            allGroups[i]->update();
+        }
+    }
+    std::vector<Sprite3D*>::iterator j = allGroups.begin();
+    while (j != allGroups.end()) {
+        if (*j == NULL) {
+            j = allGroups.erase(j);
+        }
+        else {
+            j++;
+        }
     }
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
@@ -137,7 +152,7 @@ void main(int argc, char** argv)
     glutSpecialFunc(specialkeyboard);
     glutKeyboardFunc(keyboard);
     glutTimerFunc(0, timer, 0);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glewInit();
     glutMainLoop();
 }
