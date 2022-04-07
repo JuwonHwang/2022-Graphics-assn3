@@ -2,6 +2,7 @@
 #include "sprite.h"
 #include "obj.h"
 
+
 float colorScale = 1.0f;
 
 class Sprite3D : public ColoredSprite {
@@ -32,6 +33,20 @@ public:
             _groups[i]->push_back(this);
         }
 
+    }
+
+    void kill() {
+        for (size_t i = 0; i < groups.size(); i++) {
+            for (size_t j = 0; j < groups[i]->size(); j++) {
+                if (groups[i]->at(j) == this) {
+                    groups[i]->at(j) = NULL;
+                }
+            }
+        }
+        for (size_t i = 0; i < subSprite3Ds.size(); i++) {
+            subSprite3Ds[i]->kill();
+        }
+        delete this;
     }
 
     bool loadShape(std::string path) {
@@ -71,7 +86,7 @@ public:
         colorScale = 0.1f;
         glColor3f(getColor()[0] * colorScale, getColor()[1] * colorScale, getColor()[2] * colorScale);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(2.0);
+        glLineWidth(1.5);
         glBegin(GL_POLYGON);
         for (size_t i = 0; i < vertices.size(); i++) {
             glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
@@ -83,3 +98,7 @@ public:
         glPopMatrix();
     }
 };
+
+
+
+std::vector<Sprite3D*> allGroups = {};
