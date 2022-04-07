@@ -27,7 +27,6 @@ public:
 
 class Ground : public Sprite3D {
 private:
-	Boundary boundary;
 	glm::vec2 size;
 public:
 	Ground() {
@@ -44,14 +43,6 @@ public:
 				addSprite3D(plane);
 			}
 		}
-	}
-
-	void setBoundary(Boundary _b) {
-		boundary = _b;
-	}
-
-	Boundary& getBoundary() {
-		return boundary;
 	}
 
 };
