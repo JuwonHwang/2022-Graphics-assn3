@@ -74,20 +74,18 @@ public:
         glRotatef(pitch, 0.0f, 0.0f, 1.0f);
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         
-        colorScale = 1.0f;
-        glColor3f(getColor()[0] * colorScale, getColor()[1] * colorScale, getColor()[2] * colorScale);
+        glColor3f(getColor()[0], getColor()[1], getColor()[2]);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glBegin(GL_POLYGON);
+        glBegin(GL_TRIANGLES);
         for (size_t i = 0; i < vertices.size(); i++) {
             glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
         }
         glEnd();
 
-        colorScale = 0.1f;
-        glColor3f(getColor()[0] * colorScale, getColor()[1] * colorScale, getColor()[2] * colorScale);
+        glColor3f(0, 0, 0);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glLineWidth(1.5);
-        glBegin(GL_POLYGON);
+        glBegin(GL_TRIANGLES);
         for (size_t i = 0; i < vertices.size(); i++) {
             glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
         }
