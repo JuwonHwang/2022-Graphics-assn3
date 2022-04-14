@@ -25,12 +25,12 @@ public:
 		addSprite3D(upperbody);
 		addSprite3D(lowerbody);
 		for (int i = 0; i < 6; i++) {
-			Sprite3D* wheel = new Sprite3D("", red, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
+			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
 			leftwheels.push_back(wheel);
 			addSprite3D(wheel);
 		}
 		for (int i = 0; i < 6; i++) {
-			Sprite3D* wheel = new Sprite3D("", blue, Position(-2.0f, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
+			Sprite3D* wheel = new Sprite3D("", _color, Position(-2.0f, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
 			rightwheels.push_back(wheel);
 			addSprite3D(wheel);
 		}
@@ -61,19 +61,19 @@ public:
 
 	void turnLeftWheels(float speed) {
 		for (size_t i = 0; i < leftwheels.size(); i++) {
-			leftwheels[i]->rotate(glm::vec3(speed, 0, 0));
+			leftwheels[i]->rotate(glm::vec3(speed*30, 0, 0));
 		}
 	}
 	
 	void turnRightWheels(float speed) {
 		for (size_t i = 0; i < leftwheels.size(); i++) {
-			rightwheels[i]->rotate(glm::vec3(speed, 0, 0));
+			rightwheels[i]->rotate(glm::vec3(speed*30, 0, 0));
 		}
 	}
 
 	void turn(float speed) {
-		turnLeftWheels(speed);
-		turnRightWheels(-speed);
+		turnLeftWheels(-speed);
+		turnRightWheels(speed);
 		rotate(glm::vec3(0, speed * 2, 0));
 	}
 
