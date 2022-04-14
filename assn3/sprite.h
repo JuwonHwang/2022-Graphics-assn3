@@ -131,7 +131,7 @@ public:
         color = _color;
     }
 
-    Color getColor() { // 자신의 색상을 반환
+    Color& getColor() { // 자신의 색상을 반환
         return color;
     }
 
