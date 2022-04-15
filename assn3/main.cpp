@@ -95,8 +95,10 @@ void keyboard(unsigned char key, int x, int y) {
         tank->shoot(&allGroups);
         break;
     case 'q':
+        tank->powerDown();
         break;
     case 'e':
+        tank->powerUp();
         break;
     case 'w':
         tank->rotateBarrel(5);

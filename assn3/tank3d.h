@@ -15,6 +15,8 @@ private:
 	int status = 0;
 	bool is_auto = false;
 	float recoil = 0;
+	float power = 3.0f;
+
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
 		: Sprite3D(_name, _color,_position,_groups, "") {
@@ -105,12 +107,27 @@ public:
 		return tip;
 	}
 
+	void powerUp() {
+		if (power < 5) {
+			power++;
+		}
+	}
+
+	void powerDown() {
+		if (power > 1) {
+			power--;
+		}
+	}
+
 
 	void shoot(std::vector<Sprite3D*>* _group) {
 		if (bombs.size() < 1) {
-			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * 1.0f);
+			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power);
+			//glm::vec3 _vel = glm::vec3(cosf(dir), sinf(dir), 0) * 0.01f * float(power);
+			//bomb->setVelocity(_vel);
 		}
 	}
+
 
 
 	void autonomous() {
