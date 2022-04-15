@@ -15,6 +15,7 @@
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
+bool hidden = false;
 
 Camera camera;
 Sprite3D* cube;
@@ -117,7 +118,16 @@ void keyboard(unsigned char key, int x, int y) {
     case 'v':
         camera.ChangeMode();
         break;
+    case 'r':
+        if (hidden == false) {
+            hidden = true;
+        }
+        else {
+            hidden = false;
+        }
+        break;
     }
+
     glutPostRedisplay();
 }
 
