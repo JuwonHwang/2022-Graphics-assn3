@@ -42,13 +42,13 @@ void renderScene(void)
     glEnable(GL_DEPTH_TEST);
 
     switch (camera.getMode()) {
-    case THIRD_PERSON:
+    case cmode::THIRD_PERSON:
         camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
-    case FIRST_PERSON:
+    case cmode::FIRST_PERSON:
         camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
         break;
-    case TOP_VIEW:
+    case cmode::TOP_VIEW:
         camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
     default:

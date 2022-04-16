@@ -5,6 +5,20 @@
 #include "bomb3D.h"
 #include "util.h"
 
+enum TANKSTATUS {
+	FORWARD,
+	BACKWARD,
+	TURNRIGHT,
+	TURNLEFT,
+	UPPERRIGHT,
+	UPPERLEFT,
+	BARRELUP,
+	BARRELDOWN,
+	POWERUP,
+	POWERDOWN,
+	SHOOT
+};
+
 class Tank3D : public Sprite3D {
 private:
 	Sprite3D* upperbody;
@@ -17,10 +31,8 @@ private:
 	int status = 0;
 	bool is_auto = false;
 	float is_recoil = 0;
-	//float recoil = 0;
+	int resting = 0;
 	float power = 3.0f;
-	//Position pre_pos;
-	//std::string name_tag;
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
@@ -65,6 +77,9 @@ public:
 		}
 		getVelocity().y = 0.0f;
 		getAccel().y = 0.0f;
+		if (boundary.check2D(getPosition())) {
+
+		}
 		Sprite3D::update();
 
 		if (is_recoil) {
@@ -73,6 +88,9 @@ public:
 			is_recoil--;
 		}
 		else {
+			if (resting > 0) {
+				resting--;
+			}
 			setAccel(getVelocity() * -1.0f);
 		}
 
@@ -137,8 +155,8 @@ public:
 	}
 
 	void recoil(float pow) {
-		is_recoil = 10;
-		//pre_pos = getPosition();
+		is_recoil = pow * 2;
+		resting = 10;
 		accelerate(getbarrelRPY() * pow * 0.02f);
 	}
 
@@ -147,8 +165,8 @@ public:
 	}
 
 	void shoot(std::vector<Sprite3D*>* _group) {
-		if (!is_recoil) {
-			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power);
+		if (!is_recoil && !resting) {
+			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power / 2.0f);
 			recoil(power);
 		}
 	}
@@ -156,34 +174,59 @@ public:
 
 
 	void autonomous() {
-		int todo = rand() % 25;
+		int todo = rand() % 30;
 		switch (todo)
 		{
-		case 0:
-		case 1:
-		case 2:
-		case 3:
+		case TANKSTATUS::FORWARD:
+		case TANKSTATUS::BACKWARD:
+		case TANKSTATUS::TURNLEFT:
+		case TANKSTATUS::TURNRIGHT:
+		case TANKSTATUS::UPPERLEFT:
+		case TANKSTATUS::UPPERRIGHT:
+		case TANKSTATUS::BARRELUP:
+		case TANKSTATUS::BARRELDOWN:
+		case TANKSTATUS::POWERUP:
+		case TANKSTATUS::POWERDOWN:
 			status = todo;
 			break;
-		case 4: // shoot
+		case TANKSTATUS::SHOOT:
 			shoot(&allGroups);
+			status = -1;
 			break;
 		default:
 			break;
 		}
 		switch (status)
 		{
-		case 0:
-			forward(-1);
-			break;
-		case 1:
+		case TANKSTATUS::FORWARD:
 			forward(1);
 			break;
-		case 2:
+		case TANKSTATUS::BACKWARD:
+			forward(-1);
+			break;
+		case TANKSTATUS::TURNLEFT:
 			turn(1);
 			break;
-		case 3:
+		case TANKSTATUS::TURNRIGHT:
 			turn(-1);
+			break;
+		case TANKSTATUS::UPPERLEFT:
+			rotateHead(1);
+			break;
+		case TANKSTATUS::UPPERRIGHT:
+			rotateHead(-1);
+			break;
+		case TANKSTATUS::BARRELUP:
+			rotateBarrel(1);
+			break;
+		case TANKSTATUS::BARRELDOWN:
+			rotateBarrel(-1);
+			break;
+		case TANKSTATUS::POWERUP:
+			powerUp();
+			break;
+		case TANKSTATUS::POWERDOWN:
+			powerDown();
 			break;
 		default:
 			break;
