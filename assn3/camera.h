@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sprite3d.h"
+#include "util.h"
 
 enum cmode {
 	THIRD_PERSON,
@@ -25,10 +26,7 @@ public:
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		glm::vec3 recoil_animation = {
-				0.01f * recoil * ((rand() * 2.0f / RAND_MAX) - 1),
-				0.01f * recoil * ((rand() * 2.0f / RAND_MAX) - 1),
-				0.01f * recoil * ((rand() * 2.0f / RAND_MAX) - 1) };
+		glm::vec3 recoil_animation = util::vibrationVec(recoil);
 
 		switch (mode)
 		{
