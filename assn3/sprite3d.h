@@ -67,6 +67,10 @@ public:
         pitch += rpy.z;
     }
 
+    virtual void accelerate(Position vec) {
+        setAccel(getAccel() + vec);
+    }
+
     virtual void draw3d() {
         glPushMatrix();
         glTranslatef(getPosition().x, getPosition().y, getPosition().z);
