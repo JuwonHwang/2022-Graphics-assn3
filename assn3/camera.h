@@ -3,7 +3,7 @@
 #include "sprite3d.h"
 #include "util.h"
 
-enum cmode {
+enum class cmode {
 	THIRD_PERSON,
 	FIRST_PERSON,
 	TOP_VIEW
@@ -11,9 +11,25 @@ enum cmode {
 
 class Camera {
 private:
+	
 	glm::vec3 up = Position(0.0f, 1.0f, 0.0f);
+	glm::vec3 eye = Position();
+	glm::vec3 center = Position();
 
-	cmode mode = THIRD_PERSON;
+	glm::vec3 pre_up = Position(0.0f, 1.0f, 0.0f);
+	glm::vec3 pre_eye = Position();
+	glm::vec3 pre_center = Position();
+
+	glm::vec3 d_up = Position();
+	glm::vec3 d_eye = Position();
+	glm::vec3 d_center = Position();
+
+	glm::vec3 pre_target = Position();
+	glm::vec3 pre_rpy = Position();
+
+	float smooth = 0.5f;
+
+	cmode mode = cmode::THIRD_PERSON;
 	
 	bool isOrtho = false;
 
@@ -26,11 +42,22 @@ public:
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		glm::vec3 recoil_animation = util::vibrationVec(recoil);
+		glm::vec3 recoil_animation = util::vibrationVec(recoil / smooth);
+
+		target = pre_target * smooth + target * (1 - smooth);
+		rpy = pre_rpy * smooth + rpy * (1 - smooth);
+
+		pre_target = target;
+		pre_rpy = rpy;
+
+
+		pre_eye = eye;
+		pre_center = center;
+		pre_up = up;
 
 		switch (mode)
 		{
-		case THIRD_PERSON:
+		case cmode::THIRD_PERSON:
 			gluPerspective(45, 1, 0.01, 100);
 
 			glMatrixMode(GL_MODELVIEW);
@@ -38,15 +65,30 @@ public:
 
 			glScalef(SCALE, SCALE, SCALE);
 
-			gluLookAt(
+			eye = {
 				target.x + 30 * glm::sin(rpy.y * PI / 180),
-				10 + target.y, 
-				target.z + 30 * glm::cos(rpy.y * PI / 180),
-				target.x, target.y + 5, target.z,
+				10 + target.y,
+				target.z + 30 * glm::cos(rpy.y * PI / 180)
+			};
+
+			center = {
+				target.x, target.y + 5, target.z
+			};
+
+			up = { 0,1,0 };
+
+			eye = pre_eye * smooth + eye * (1- smooth);
+			center = pre_center * smooth + center * (1 - smooth);
+			up = pre_up * smooth + up * (1 - smooth);
+
+			gluLookAt(
+				eye.x, eye.y, eye.z,
+				center.x, center.y, center.z,
 				up.x, up.y, up.z
 			);
+
 			break;
-		case FIRST_PERSON:
+		case cmode::FIRST_PERSON:
 			gluPerspective(45, 1, 0.01, 100);
 
 			glMatrixMode(GL_MODELVIEW);
@@ -54,17 +96,29 @@ public:
 
 			glScalef(SCALE, SCALE, SCALE);
 
-			
+			eye = {
+				target.x + rpy.x * 2 + recoil_animation.x,
+				target.y + 3.2 - rpy.y * 3 + recoil_animation.y,
+				target.z + rpy.z * 2 + recoil_animation.z
+			};
+
+			center = {
+				target.x - rpy.x * 6, target.y + 2.2 - rpy.y * 5, target.z - rpy.z * 6
+			};
+
+			up = { 0,1,0 };
+
+			eye = pre_eye * smooth + eye * (1 - smooth);
+			center = pre_center * smooth + center * (1 - smooth);
+			up = pre_up * smooth + up * (1 - smooth);
 
 			gluLookAt(
-				target.x + rpy.x * 2 + recoil_animation.x, 
-				target.y + 3.2 - rpy.y * 3 + recoil_animation.y, 
-				target.z + rpy.z * 2 + recoil_animation.z,
-				target.x - rpy.x * 6, target.y + 2.2 - rpy.y * 5, target.z - rpy.z * 6,
+				eye.x, eye.y, eye.z,
+				center.x, center.y, center.z,
 				up.x, up.y, up.z
 			);
 			break;
-		case TOP_VIEW:
+		case cmode::TOP_VIEW:
 			glOrtho(-3, 3, -3, 3, -10, 10);
 
 			glMatrixMode(GL_MODELVIEW);
@@ -72,11 +126,26 @@ public:
 
 			glScalef(SCALE, SCALE, SCALE);
 
+			eye = {
+				0,10,0
+			};
+
+			center = {
+				0,0,0
+			};
+
+			up = { 0,0,-1 };
+
+			eye = pre_eye * smooth + eye * (1 - smooth);
+			center = pre_center * smooth + center * (1 - smooth);
+			up = pre_up * smooth + up * (1 - smooth);
+
 			gluLookAt(
-				0,10,0,
-				0,0,0,
-				0,0,-1
+				eye.x, eye.y, eye.z,
+				center.x, center.y, center.z,
+				up.x, up.y, up.z
 			);
+
 			break;
 		default:
 			break;
@@ -87,14 +156,14 @@ public:
 	void ChangeMode() {
 		switch (mode)
 		{
-		case THIRD_PERSON:
-			mode = FIRST_PERSON;
+		case cmode::THIRD_PERSON:
+			mode = cmode::FIRST_PERSON;
 			break;
-		case FIRST_PERSON:
-			mode = TOP_VIEW;
+		case cmode::FIRST_PERSON:
+			mode = cmode::TOP_VIEW;
 			break;
-		case TOP_VIEW:
-			mode = THIRD_PERSON;
+		case cmode::TOP_VIEW:
+			mode = cmode::THIRD_PERSON;
 			break;
 		default:
 			break;

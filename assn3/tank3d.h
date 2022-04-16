@@ -5,6 +5,20 @@
 #include "bomb3D.h"
 #include "util.h"
 
+enum TANKSTATUS {
+	FORWARD,
+	BACKWARD,
+	TURNRIGHT,
+	TURNLEFT,
+	UPPERRIGHT,
+	UPPERLEFT,
+	BARRELUP,
+	BARRELDOWN,
+	POWERUP,
+	POWERDOWN,
+	SHOOT
+};
+
 class Tank3D : public Sprite3D {
 private:
 	Sprite3D* upperbody;
@@ -148,7 +162,7 @@ public:
 
 	void shoot(std::vector<Sprite3D*>* _group) {
 		if (!is_recoil) {
-			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power);
+			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power / 2.0f);
 			recoil(power);
 		}
 	}
@@ -156,34 +170,59 @@ public:
 
 
 	void autonomous() {
-		int todo = rand() % 25;
+		int todo = rand() % 30;
 		switch (todo)
 		{
-		case 0:
-		case 1:
-		case 2:
-		case 3:
+		case TANKSTATUS::FORWARD:
+		case TANKSTATUS::BACKWARD:
+		case TANKSTATUS::TURNLEFT:
+		case TANKSTATUS::TURNRIGHT:
+		case TANKSTATUS::UPPERLEFT:
+		case TANKSTATUS::UPPERRIGHT:
+		case TANKSTATUS::BARRELUP:
+		case TANKSTATUS::BARRELDOWN:
+		case TANKSTATUS::POWERUP:
+		case TANKSTATUS::POWERDOWN:
 			status = todo;
 			break;
-		case 4: // shoot
+		case TANKSTATUS::SHOOT:
 			shoot(&allGroups);
+			status = -1;
 			break;
 		default:
 			break;
 		}
 		switch (status)
 		{
-		case 0:
-			forward(-1);
-			break;
-		case 1:
+		case TANKSTATUS::FORWARD:
 			forward(1);
 			break;
-		case 2:
+		case TANKSTATUS::BACKWARD:
+			forward(-1);
+			break;
+		case TANKSTATUS::TURNLEFT:
 			turn(1);
 			break;
-		case 3:
+		case TANKSTATUS::TURNRIGHT:
 			turn(-1);
+			break;
+		case TANKSTATUS::UPPERLEFT:
+			rotateHead(1);
+			break;
+		case TANKSTATUS::UPPERRIGHT:
+			rotateHead(-1);
+			break;
+		case TANKSTATUS::BARRELUP:
+			rotateBarrel(1);
+			break;
+		case TANKSTATUS::BARRELDOWN:
+			rotateBarrel(-1);
+			break;
+		case TANKSTATUS::POWERUP:
+			powerUp();
+			break;
+		case TANKSTATUS::POWERDOWN:
+			powerDown();
 			break;
 		default:
 			break;
