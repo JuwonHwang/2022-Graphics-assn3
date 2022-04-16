@@ -13,6 +13,7 @@ private:
 	std::vector<Sprite3D*> leftwheels;
 	std::vector<Sprite3D*> rightwheels;
 	Boundary boundary = Boundary(Position(-40, -40, 0), Position(40, 40, 0));
+	Position upperbodyPos = Position(0.0f, 1.6f, 0.0f);
 	int status = 0;
 	bool is_auto = false;
 	float is_recoil = 0;
@@ -24,7 +25,7 @@ private:
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
 		: Sprite3D(_name, _color,_position,_groups, "") {
-		upperbody = new Sprite3D("", _color, Position(0.0f, 1.5f, 0.0f), {}, "resource/upperbody.obj");
+		upperbody = new Sprite3D("", _color, upperbodyPos, {}, "resource/upperbody.obj");
 		Sprite3D* lowerbody = new Sprite3D("", _color, Position(), {}, "resource/body.obj");
 		barrel = new Sprite3D("", _color, Position(0.0f, 0.0f, 0.0f), {}, "resource/barrel.obj");
 		upperbody->addSprite3D(barrel);
@@ -68,6 +69,7 @@ public:
 
 		if (is_recoil) {
 			setAccel(getVelocity() * -0.2f);
+			upperbody->setPosition(upperbodyPos + util::vibrationVec(is_recoil));
 			is_recoil--;
 		}
 		else {
