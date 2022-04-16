@@ -23,10 +23,11 @@ namespace util {
 	}
 
 	glm::vec3 vibrationVec(float mag) {
+		mag = 0.01f * powf(mag, 1.5f);
 		glm::vec3 vec = {
-				0.01f * mag * ((rand() * 2.0f / RAND_MAX) - 1),
-				0.01f * mag * ((rand() * 2.0f / RAND_MAX) - 1),
-				0.01f * mag * ((rand() * 2.0f / RAND_MAX) - 1) };
+				mag * ((rand() * 2.0f / RAND_MAX) - 1),
+				mag * ((rand() * 2.0f / RAND_MAX) - 1),
+				mag * ((rand() * 2.0f / RAND_MAX) - 1) };
 		return vec;
 	}
 }

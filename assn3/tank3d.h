@@ -151,7 +151,7 @@ public:
 	}
 
 	void recoil(float pow) {
-		is_recoil = 10;
+		is_recoil = pow * 2;
 		//pre_pos = getPosition();
 		accelerate(getbarrelRPY() * pow * 0.02f);
 	}
