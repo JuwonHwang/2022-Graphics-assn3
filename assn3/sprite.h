@@ -51,7 +51,7 @@ public:
         position = _position;
     }
 
-    const glm::vec3 getVelocity() {
+    glm::vec3& getVelocity() {
         return vel;
     }
 
@@ -59,7 +59,7 @@ public:
         vel = _vel;
     }
 
-    const glm::vec3 getAccel() {
+    glm::vec3& getAccel() {
         return acc;
     }
 

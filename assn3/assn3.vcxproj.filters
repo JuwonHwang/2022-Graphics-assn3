@@ -60,6 +60,9 @@
     <ClInclude Include="collision3D.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt">

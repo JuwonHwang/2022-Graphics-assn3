@@ -15,6 +15,7 @@
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
+bool hidden = false;
 
 Camera camera;
 Sprite3D* cube;
@@ -41,14 +42,14 @@ void renderScene(void)
     glEnable(GL_DEPTH_TEST);
 
     switch (camera.getMode()) {
-    case THIRD_PERSON:
-        camera.View(tank->getPosition(), tank->getRPY());
+    case cmode::THIRD_PERSON:
+        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
-    case FIRST_PERSON:
-        camera.View(tank->getPosition(), tank->getbarrelRPY());
+    case cmode::FIRST_PERSON:
+        camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
         break;
-    case TOP_VIEW:
-        camera.View(tank->getPosition(), tank->getRPY());
+    case cmode::TOP_VIEW:
+        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
     default:
         break;
@@ -95,8 +96,10 @@ void keyboard(unsigned char key, int x, int y) {
         tank->shoot(&allGroups);
         break;
     case 'q':
+        tank->powerDown();
         break;
     case 'e':
+        tank->powerUp();
         break;
     case 'w':
         tank->rotateBarrel(5);
@@ -115,7 +118,16 @@ void keyboard(unsigned char key, int x, int y) {
     case 'v':
         camera.ChangeMode();
         break;
+    case 'r':
+        if (hidden == false) {
+            hidden = true;
+        }
+        else {
+            hidden = false;
+        }
+        break;
     }
+
     glutPostRedisplay();
 }
 
@@ -141,6 +153,7 @@ void timer(int value) {
 
 void main(int argc, char** argv)
 {
+    srand(time(NULL));
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);

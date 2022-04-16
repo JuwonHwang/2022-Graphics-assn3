@@ -167,6 +167,7 @@
     <ClInclude Include="spriteGroup.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tank3d.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
