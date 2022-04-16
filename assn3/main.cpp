@@ -43,13 +43,13 @@ void renderScene(void)
 
     switch (camera.getMode()) {
     case THIRD_PERSON:
-        camera.View(tank->getPosition(), tank->getRPY());
+        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
     case FIRST_PERSON:
-        camera.View(tank->getPosition(), tank->getbarrelRPY());
+        camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
         break;
     case TOP_VIEW:
-        camera.View(tank->getPosition(), tank->getRPY());
+        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
     default:
         break;
@@ -153,6 +153,7 @@ void timer(int value) {
 
 void main(int argc, char** argv)
 {
+    srand(time(NULL));
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);

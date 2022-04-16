@@ -21,9 +21,15 @@ public:
 
 	}
 
-	void View(Position target, glm::vec3 rpy) {
+	void View(Position target, glm::vec3 rpy, float recoil) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+
+		glm::vec3 recoil_animation = {
+				0.01f * recoil * ((rand() * 2.0f / RAND_MAX) - 1),
+				0.01f * recoil * ((rand() * 2.0f / RAND_MAX) - 1),
+				0.01f * recoil * ((rand() * 2.0f / RAND_MAX) - 1) };
+
 		switch (mode)
 		{
 		case THIRD_PERSON:
@@ -35,7 +41,9 @@ public:
 			glScalef(SCALE, SCALE, SCALE);
 
 			gluLookAt(
-				target.x + 30 * glm::sin(rpy.y * PI / 180), 10 + target.y, target.z + 30 * glm::cos(rpy.y * PI / 180),
+				target.x + 30 * glm::sin(rpy.y * PI / 180),
+				10 + target.y, 
+				target.z + 30 * glm::cos(rpy.y * PI / 180),
 				target.x, target.y + 5, target.z,
 				up.x, up.y, up.z
 			);
@@ -48,8 +56,12 @@ public:
 
 			glScalef(SCALE, SCALE, SCALE);
 
+			
+
 			gluLookAt(
-				target.x + rpy.x * 2, target.y + 3.2 - rpy.y * 3, target.z + rpy.z * 2,
+				target.x + rpy.x * 2 + recoil_animation.x, 
+				target.y + 3.2 - rpy.y * 3 + recoil_animation.y, 
+				target.z + rpy.z * 2 + recoil_animation.z,
 				target.x - rpy.x * 6, target.y + 2.2 - rpy.y * 5, target.z - rpy.z * 6,
 				up.x, up.y, up.z
 			);
