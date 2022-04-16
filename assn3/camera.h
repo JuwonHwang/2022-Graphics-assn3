@@ -97,13 +97,15 @@ public:
 			glScalef(SCALE, SCALE, SCALE);
 
 			eye = {
-				target.x + rpy.x * 2 + recoil_animation.x,
-				target.y + 3.2 - rpy.y * 3 + recoil_animation.y,
-				target.z + rpy.z * 2 + recoil_animation.z
+				target.x + rpy.x * 2,
+				target.y + 3.2 - rpy.y * 3,
+				target.z + rpy.z * 2 
 			};
 
 			center = {
-				target.x - rpy.x * 6, target.y + 2.2 - rpy.y * 5, target.z - rpy.z * 6
+				target.x - rpy.x * 6 + recoil_animation.x,
+				target.y + 2.2 - rpy.y * 5 + recoil_animation.y, 
+				target.z - rpy.z * 6 + recoil_animation.z
 			};
 
 			up = { 0,1,0 };
