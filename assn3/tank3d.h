@@ -31,10 +31,8 @@ private:
 	int status = 0;
 	bool is_auto = false;
 	float is_recoil = 0;
-	//float recoil = 0;
+	int resting = 0;
 	float power = 3.0f;
-	//Position pre_pos;
-	//std::string name_tag;
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
@@ -79,6 +77,9 @@ public:
 		}
 		getVelocity().y = 0.0f;
 		getAccel().y = 0.0f;
+		if (boundary.check2D(getPosition())) {
+
+		}
 		Sprite3D::update();
 
 		if (is_recoil) {
@@ -87,6 +88,9 @@ public:
 			is_recoil--;
 		}
 		else {
+			if (resting > 0) {
+				resting--;
+			}
 			setAccel(getVelocity() * -1.0f);
 		}
 
@@ -152,7 +156,7 @@ public:
 
 	void recoil(float pow) {
 		is_recoil = pow * 2;
-		//pre_pos = getPosition();
+		resting = 10;
 		accelerate(getbarrelRPY() * pow * 0.02f);
 	}
 
@@ -161,7 +165,7 @@ public:
 	}
 
 	void shoot(std::vector<Sprite3D*>* _group) {
-		if (!is_recoil) {
+		if (!is_recoil && !resting) {
 			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power / 2.0f);
 			recoil(power);
 		}
