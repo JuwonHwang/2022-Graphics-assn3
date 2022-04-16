@@ -3,6 +3,7 @@
 #include "sprite3d.h"
 #include "ground.h"
 #include "bomb3D.h"
+#include "util.h"
 
 class Tank3D : public Sprite3D {
 private:
@@ -14,10 +15,11 @@ private:
 	Boundary boundary = Boundary(Position(-40, -40, 0), Position(40, 40, 0));
 	int status = 0;
 	bool is_auto = false;
+	float is_recoil = 0;
 	//float recoil = 0;
 	float power = 3.0f;
-	Position pre_pos;
-	std::string name_tag;
+	//Position pre_pos;
+	//std::string name_tag;
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
@@ -28,7 +30,7 @@ public:
 		upperbody->addSprite3D(barrel);
 		addSprite3D(upperbody);
 		addSprite3D(lowerbody);
-		name_tag = _name;
+		//name_tag = _name;
 		for (int i = 0; i < 6; i++) {
 			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
 			leftwheels.push_back(wheel);
@@ -60,71 +62,16 @@ public:
 		if (is_auto) {
 			autonomous();
 		}
+		getVelocity().y = 0.0f;
+		getAccel().y = 0.0f;
 		Sprite3D::update();
-		//setVelocity({ 0,0,0 });
-		int rad = int(getRPY()[1]) % 360;
-		std::cout << rad << std::endl;
-		if (name_tag == "tank") {
-			if (rad > 0) {
-				if (rad < 180) {
-					if (getPosition()[0] <= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-				else {
-					if (getPosition()[0] >= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
 
-			}
-			else {
-				if (rad > -180) {
-					if (getPosition()[0] <= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-				else {
-					if (getPosition()[0] >= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-			}
+		if (is_recoil) {
+			setAccel(getVelocity() * -0.2f);
+			is_recoil--;
 		}
 		else {
-			if (rad > 0) {
-				if (rad < 180) {
-					if (getPosition()[0] >= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-				else {
-					if (getPosition()[0] <= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-
-			}
-			else {
-				if (rad > -180) {
-					if (getPosition()[0] >= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-				else {
-					if (getPosition()[0] <= pre_pos[0]) {
-						setVelocity({ 0,0,0 });
-						setAccel({ 0,0,0 });
-					}
-				}
-			}
+			setAccel(getVelocity() * -1.0f);
 		}
 
 	}
@@ -148,7 +95,7 @@ public:
 	}
 
 	void forward(float speed) {
-		setVelocity({ 0.2 * speed * glm::sin(getRPY().y * PI / 180), 0, 0.2 * speed * glm::cos(getRPY().y * PI / 180) });
+		accelerate({ 0.2 * speed * glm::sin(getRPY().y * PI / 180), 0, 0.2 * speed * glm::cos(getRPY().y * PI / 180) });
 		turnLeftWheels(speed);
 		turnRightWheels(speed);
 	}
@@ -188,17 +135,20 @@ public:
 	}
 
 	void recoil(float pow) {
-		pre_pos = getPosition();
-		setVelocity(getbarrelRPY() * pow / 3.0f);
-		setAccel(getbarrelRPY() * -0.4f);
+		is_recoil = 10;
+		//pre_pos = getPosition();
+		accelerate(getbarrelRPY() * pow * 0.02f);
 	}
 
+	float getRecoil() {
+		return is_recoil;
+	}
 
 	void shoot(std::vector<Sprite3D*>* _group) {
-		if (bombs.size() < 1) {
+		if (!is_recoil) {
 			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power);
+			recoil(power);
 		}
-		recoil(power);
 	}
 
 
