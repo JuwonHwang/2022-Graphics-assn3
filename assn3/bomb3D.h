@@ -7,7 +7,7 @@ private:
 
 public:
     Bomb3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups, Position _vel)
-        :Sprite3D(_name, _color, _position, _groups, "resource/ball.obj") {
+        :Sprite3D(_name, _color, _position, _groups, "resource/Cube.obj") {
         setVelocity(_vel);
         setAccel(glm::vec3(0.0f, -0.03f, 0.0f));
         setCollisionTag("bomb");

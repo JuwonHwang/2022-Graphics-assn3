@@ -21,9 +21,6 @@
     <ClInclude Include="sprite.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="spriteGroup.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="obj.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
@@ -46,6 +43,9 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="util.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="collider.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>

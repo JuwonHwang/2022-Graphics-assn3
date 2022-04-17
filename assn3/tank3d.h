@@ -21,7 +21,6 @@ enum TANKSTATUS {
 
 class Tank3D : public Sprite3D {
 private:
-	Sprite3D* lowerbody;
 	Sprite3D* upperbody;
 	Sprite3D* barrel;
 	std::vector<Sprite3D*> bombs;
@@ -37,13 +36,11 @@ private:
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
-		: Sprite3D(_name, _color,_position,_groups, "") {
+		: Sprite3D(_name, _color,_position,_groups, "resource/body.obj") {
 		upperbody = new Sprite3D("", _color, upperbodyPos, {}, "resource/upperbody.obj");
-		lowerbody = new Sprite3D("", _color, Position(), {}, "resource/body.obj");
 		barrel = new Sprite3D("", _color, Position(0.0f, 0.0f, 0.0f), {}, "resource/barrel.obj");
 		upperbody->addSprite3D(barrel);
 		addSprite3D(upperbody);
-		addSprite3D(lowerbody);
 		//name_tag = _name;
 		for (int i = 0; i < 6; i++) {
 			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
@@ -168,18 +165,10 @@ public:
 	}
 
 	void shoot(std::vector<Sprite3D*>* _group) {
-		if (!is_recoil && !resting) {
+		/*if (!is_recoil && !resting) {
 			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power / 2.0f);
 			recoil(power);
-		}
-	}
-
-	virtual std::vector<glm::vec3> getCollider(const Transform t) {
-		Transform transform = glm::translate(t, getPosition());
-		transform = glm::rotate(transform, getRPY().x, glm::vec3(1.0f, 0.0f, 0.0f));
-		transform = glm::rotate(transform, getRPY().z, glm::vec3(0.0f, 0.0f, 1.0f));
-		transform = glm::rotate(transform, getRPY().y, glm::vec3(0.0f, 1.0f, 0.0f));
-		return lowerbody->getCollider(transform);
+		}*/
 	}
 
 	void autonomous() {

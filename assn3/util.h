@@ -34,4 +34,8 @@ namespace util {
 	glm::vec3 triangleVec(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 		return glm::cross(b - a, c - b);
 	}
+
+	glm::vec3 absvec(glm::vec3 a) {
+		return { glm::abs(a.x), glm::abs(a.y), glm::abs(a.z) };
+	}
 }

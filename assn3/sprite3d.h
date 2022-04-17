@@ -1,6 +1,7 @@
 #pragma once
 #include "sprite.h"
 #include "obj.h"
+#include "collider.h"
 
 
 float colorScale = 1.0f;
@@ -101,19 +102,32 @@ public:
         glPopMatrix();
     }
 
-    virtual std::vector<glm::vec3> getCollider(const Transform t) { 
+    virtual Collider getCollider(const Transform t, const Transform r) { 
 
         Transform transform = glm::translate(t, getPosition());
         transform = glm::rotate(transform, roll, glm::vec3(1.0f, 0.0f, 0.0f));
         transform = glm::rotate(transform, pitch, glm::vec3(0.0f, 0.0f, 1.0f));
         transform = glm::rotate(transform, yaw, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        Positions transformMask;
+        Transform t_r = glm::rotate(r, roll, glm::vec3(1.0f, 0.0f, 0.0f));
+        t_r = glm::rotate(t_r, pitch, glm::vec3(0.0f, 0.0f, 1.0f));
+        t_r = glm::rotate(t_r, yaw, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        Position maxbox(0,0,0);
         for (size_t i = 1; i < collider.size(); i++)
         {
-            transformMask.push_back(transform * glm::vec4(collider[i], 1));
+            maxbox.x = glm::max(maxbox.x, glm::abs(collider[i].x));
+            maxbox.y = glm::max(maxbox.y, glm::abs(collider[i].y));
+            maxbox.z = glm::max(maxbox.z, glm::abs(collider[i].z));
         }
-        return transformMask;
+
+        Positions rotNormal;
+        for (size_t i = 1; i < 3; i++)
+        {
+            rotNormal.push_back(t_r * glm::vec4(normals[i], 1));
+        }
+
+        return Collider(transform * glm::vec4(0, 0, 0, 1), maxbox, rotNormal);
     }
 
 };
