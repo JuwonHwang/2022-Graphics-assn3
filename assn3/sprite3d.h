@@ -2,7 +2,7 @@
 #include "sprite.h"
 #include "obj.h"
 
-bool hidden_line_render = false;
+bool hidden_line_removal = false;
 
 class Sprite3D : public ColoredSprite {
 private:
@@ -77,22 +77,25 @@ public:
         glRotatef(pitch, 0.0f, 0.0f, 1.0f);
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         
-        if (hidden_line_render) {
+        if (hidden_line_removal) {
+            glColor4f(getColor()[0], getColor()[1], getColor()[2], 0.5f);
+            glPolygonMode(GL_FRONT, GL_FILL);
 
+
+            glBegin(GL_TRIANGLES);
+            for (size_t i = 0; i < vertices.size(); i++) {
+                glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+            }
+            glEnd();
         }
 
-        glColor4f(getColor()[0], getColor()[1], getColor()[2],0.5f);
-        glPolygonMode(GL_FRONT, GL_FILL);
-        
-        glBegin(GL_TRIANGLES);
-        for (size_t i = 0; i < vertices.size(); i++) {
-            glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+        glColor4f(getColor()[0], getColor()[1], getColor()[2], 0.5f);
+        if (hidden_line_removal) {
+            glColor4f(0, 0, 0, 0);
         }
-        glEnd();
-
-        glColor3f(0, 0, 0);
-        glPolygonMode(GL_FRONT, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glLineWidth(1.5);
+
         
         glBegin(GL_TRIANGLES);
         for (size_t i = 0; i < vertices.size(); i++) {

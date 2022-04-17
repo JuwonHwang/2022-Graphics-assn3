@@ -41,7 +41,7 @@ void renderScene(void)
     glEnable(GL_DEPTH_TEST);
     glCullFace(GL_BACK);
 
-    if (hidden_line_render) {
+    if (hidden_line_removal) {
         glEnable(GL_CULL_FACE);
         
     }
@@ -128,7 +128,7 @@ void keyboard(unsigned char key, int x, int y) {
         camera.ChangeMode();
         break;
     case 'r':
-        hidden_line_render = !hidden_line_render;
+        hidden_line_removal = !hidden_line_removal;
         break;
     }
 
