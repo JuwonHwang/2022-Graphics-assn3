@@ -122,13 +122,19 @@ void keyboard(unsigned char key, int x, int y) {
     case 'd':
         tank->rotateHead(-5);
         break;
-    case 'f':
-        break;
     case 'v':
         camera.ChangeMode();
         break;
     case 'r':
         hidden_line_removal = !hidden_line_removal;
+        break;
+    case 'c':
+        all_pass = !all_pass;
+        enemy->setWeak(all_pass);
+        break;
+    case 'f':
+        all_fail = !all_fail;
+        tank->setWeak(all_fail);
         break;
     }
 
@@ -152,6 +158,20 @@ void timer(int value) {
         }
     }
     glutPostRedisplay();
+
+    if (tank->getHp() <= 0 && enemy->getHp() <= 0) {
+        std::cout << "DRAW..." << std::endl;
+        playing = false;
+    }
+    else if (tank->getHp() <= 0) {
+        std::cout << "YOU LOSE!" << std::endl;
+        playing = false;
+    }
+    else if (enemy->getHp() <= 0) {
+        std::cout << "YOU WIN!!!" << std::endl;
+        playing = false;
+    }
+
     glutTimerFunc(30, timer, 0);
 }
 
