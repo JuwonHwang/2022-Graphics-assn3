@@ -3,10 +3,7 @@
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
 #include <vector>
-#include "tank.h"
-#include "bomb.h"
-#include "land.h"
-#include "collision.h"
+#include "collision3D.h"
 #include "sprite3d.h"
 #include "tank3d.h"
 #include "ground.h"
@@ -132,6 +129,7 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 void timer(int value) {
+    checkAllCollision(allGroups);
     for (size_t i = 0; i < allGroups.size(); i++)
     {
         if (allGroups[i] != NULL) {

@@ -101,6 +101,21 @@ public:
         glPopMatrix();
     }
 
+    virtual std::vector<glm::vec3> getCollider(const Transform t) { 
+
+        Transform transform = glm::translate(t, getPosition());
+        transform = glm::rotate(transform, roll, glm::vec3(1.0f, 0.0f, 0.0f));
+        transform = glm::rotate(transform, pitch, glm::vec3(0.0f, 0.0f, 1.0f));
+        transform = glm::rotate(transform, yaw, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        Positions transformMask;
+        for (size_t i = 1; i < collider.size(); i++)
+        {
+            transformMask.push_back(transform * glm::vec4(collider[i], 1));
+        }
+        return transformMask;
+    }
+
 };
 
 

@@ -10,6 +10,7 @@ public:
         :Sprite3D(_name, _color, _position, _groups, "resource/ball.obj") {
         setVelocity(_vel);
         setAccel(glm::vec3(0.0f, -0.03f, 0.0f));
+        setCollisionTag("bomb");
     }
 
     virtual void update() {
