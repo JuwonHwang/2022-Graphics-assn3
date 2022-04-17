@@ -153,19 +153,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="bomb3D.h" />
-    <ClInclude Include="bomb.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="collision.h" />
     <ClInclude Include="collision3D.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="ground.h" />
-    <ClInclude Include="land.h" />
     <ClInclude Include="obj.h" />
-    <ClInclude Include="shapes.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="sprite3d.h" />
     <ClInclude Include="spriteGroup.h" />
-    <ClInclude Include="tank.h" />
     <ClInclude Include="tank3d.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
