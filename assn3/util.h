@@ -30,4 +30,8 @@ namespace util {
 				mag * ((rand() * 2.0f / RAND_MAX) - 1) };
 		return vec;
 	}
+
+	glm::vec3 triangleVec(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
+		return glm::cross(b - a, c - b);
+	}
 }
