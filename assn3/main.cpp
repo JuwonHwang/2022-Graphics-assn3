@@ -15,7 +15,6 @@
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
-bool hidden = false;
 
 Camera camera;
 Sprite3D* cube;
@@ -40,6 +39,16 @@ void renderScene(void)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+    glCullFace(GL_BACK);
+
+    if (hidden_line_render) {
+        glEnable(GL_CULL_FACE);
+        
+    }
+    else {
+        glDisable(GL_CULL_FACE);
+    }
+    
 
     switch (camera.getMode()) {
     case cmode::THIRD_PERSON:
@@ -119,12 +128,7 @@ void keyboard(unsigned char key, int x, int y) {
         camera.ChangeMode();
         break;
     case 'r':
-        if (hidden == false) {
-            hidden = true;
-        }
-        else {
-            hidden = false;
-        }
+        hidden_line_render = !hidden_line_render;
         break;
     }
 
