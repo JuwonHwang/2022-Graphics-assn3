@@ -94,7 +94,8 @@ public:
 			setBarrelColorByPower();
 		}
 		
-		
+		getAccel().y = 0;
+		getVelocity().y = 0;
 		Sprite3D::update();
 		
 
