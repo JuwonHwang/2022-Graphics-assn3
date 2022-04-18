@@ -43,7 +43,6 @@ void renderScene(void)
 
     if (hidden_line_removal) {
         glEnable(GL_CULL_FACE);
-        
     }
     else {
         glDisable(GL_CULL_FACE);
