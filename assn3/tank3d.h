@@ -26,7 +26,7 @@ private:
 	std::vector<Sprite3D*> bombs;
 	std::vector<Sprite3D*> leftwheels;
 	std::vector<Sprite3D*> rightwheels;
-	Boundary boundary = Boundary(Position(-40, -40, 0), Position(40, 40, 0));
+	Boundary boundary = Boundary(Position(25, 0, 25), Position(-25, 0, -25));
 	Position upperbodyPos = Position(0.0f, 1.6f, 0.0f);
 	int status = 0;
 	bool is_auto = false;
@@ -38,13 +38,11 @@ private:
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
-		: Sprite3D(_name, _color,_position,_groups, "") {
+		: Sprite3D(_name, _color,_position,_groups, "resource/body.obj") {
 		upperbody = new Sprite3D("", _color, upperbodyPos, {}, "resource/upperbody.obj");
-		Sprite3D* lowerbody = new Sprite3D("", _color, Position(), {}, "resource/body.obj");
 		barrel = new Sprite3D("", _color, Position(0.0f, 0.0f, 0.0f), {}, "resource/barrel.obj");
 		upperbody->addSprite3D(barrel);
 		addSprite3D(upperbody);
-		addSprite3D(lowerbody);
 		//name_tag = _name;
 		for (int i = 0; i < 6; i++) {
 			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
@@ -56,7 +54,7 @@ public:
 			rightwheels.push_back(wheel);
 			addSprite3D(wheel);
 		}
-		
+		setCollisionTag("tank");
 		move(Position(0, 2, 0));
 	}
 
@@ -79,10 +77,29 @@ public:
 		}
 		getVelocity().y = 0.0f;
 		getAccel().y = 0.0f;
-		if (boundary.check2D(getPosition())) {
+		
+		std::set<std::string> tags = getCollisionGroup();
+		if (tags.find("tank") != tags.end()) {
+			setVelocity({ 0,0,0 });
+		}
+		if (tags.find("bomb") != tags.end()) {
 
 		}
+		
 		Sprite3D::update();
+
+		if (boundary.getSmall().x >= getPosition().x) {
+			setPosition({ boundary.getSmall().x, getPosition().y, getPosition().z });
+		}
+		if (boundary.getSmall().z >= getPosition().z) {
+			setPosition({ getPosition().x, getPosition().y, boundary.getSmall().z});
+		}
+		if (boundary.getLarge().x <= getPosition().x) {
+			setPosition({ boundary.getLarge().x, getPosition().y, getPosition().z });
+		}
+		if (boundary.getLarge().z <= getPosition().z) {
+			setPosition({ getPosition().x, getPosition().y, boundary.getLarge().z });
+		}
 
 		if (is_recoil) {
 			setAccel(getVelocity() * -0.2f);

@@ -6,7 +6,7 @@
 #include "tank.h"
 #include "bomb.h"
 #include "land.h"
-#include "collision.h"
+#include "collision3D.h"
 #include "sprite3d.h"
 #include "tank3d.h"
 #include "ground.h"
@@ -24,11 +24,11 @@ Ground* ground;
 
 void init(void) {
     //cube = new Sprite3D("Cube", grey, Position(0, 0, 0), { &allGroups }, "resource/body.obj");
-    tank = new Tank3D("tank", grey, Position(0, 0, 20), { &allGroups });
-    enemy = new Tank3D("enemy", red, Position(0, 0, -20), { &allGroups });
+    tank = new Tank3D("tank", darkgrey, Position(0, 0, 10), { &allGroups });
+    enemy = new Tank3D("enemy", red, Position(0, 0, -10), { &allGroups });
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
-    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 40,40 });
+    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 60,60 });
 }
 
 void renderScene(void)
@@ -141,6 +141,7 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 void timer(int value) {
+    checkAllCollision(allGroups);
     for (size_t i = 0; i < allGroups.size(); i++)
     {
         if (allGroups[i] != NULL) {
