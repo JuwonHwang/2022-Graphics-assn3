@@ -91,6 +91,7 @@ public:
 		}
 		else if (getColor() != original) {
 			setColorAll(original * 0.1 + getColor() * 0.9);
+			setBarrelColorByPower();
 		}
 		
 		
