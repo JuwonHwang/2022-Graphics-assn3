@@ -217,7 +217,7 @@ void checkAllCollision(std::vector<Sprite3D*> allGroup) {
 			if (allGroup[j]->getCollisionTag() == "none") {
 				continue;
 			}
-			if (GJK_intersection(allGroup[i]->getCollider(Transform(0.0f)), allGroup[j]->getCollider(Transform(0.0f)))) {
+			if (GJK_intersection(allGroup[i]->getCollider(Transform(1.0f)), allGroup[j]->getCollider(Transform(1.0f)))) {
 			// if (AABB(allGroup[i]->getRectangle(allGroup[i]->getVelocity(), 0.0f), allGroup[j]->getRectangle(allGroup[j]->getVelocity(), 0.0f))) {
 				allGroup[i]->getCollisionGroup().insert(allGroup[j]->getCollisionTag());
 				allGroup[j]->getCollisionGroup().insert(allGroup[i]->getCollisionTag());
