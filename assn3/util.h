@@ -30,4 +30,8 @@ namespace util {
 				mag * ((rand() * 2.0f / RAND_MAX) - 1) };
 		return vec;
 	}
+
+	bool SameDirection(const glm::vec3& a, const glm::vec3& v){
+		return glm::dot(a,v) > 0;
+	}
 }
