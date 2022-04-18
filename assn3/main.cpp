@@ -29,7 +29,7 @@ void init(void) {
     enemy = new Tank3D("enemy", red, Position(0, 0, -20), { &allGroups });
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
-    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 40,40 });
+    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 60,60 });
 }
 
 void renderScene(void)

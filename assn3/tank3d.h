@@ -26,7 +26,7 @@ private:
 	std::vector<Sprite3D*> bombs;
 	std::vector<Sprite3D*> leftwheels;
 	std::vector<Sprite3D*> rightwheels;
-	Boundary boundary = Boundary(Position(-40, -40, 0), Position(40, 40, 0));
+	Boundary boundary = Boundary(Position(25, 0, 25), Position(-25, 0, -25));
 	Position upperbodyPos = Position(0.0f, 1.6f, 0.0f);
 	int status = 0;
 	bool is_auto = false;
@@ -77,10 +77,21 @@ public:
 		}
 		getVelocity().y = 0.0f;
 		getAccel().y = 0.0f;
-		if (boundary.check2D(getPosition())) {
-
-		}
+		
 		Sprite3D::update();
+
+		if (boundary.getSmall().x >= getPosition().x) {
+			setPosition({ boundary.getSmall().x, getPosition().y, getPosition().z });
+		}
+		if (boundary.getSmall().z >= getPosition().z) {
+			setPosition({ getPosition().x, getPosition().y, boundary.getSmall().z});
+		}
+		if (boundary.getLarge().x <= getPosition().x) {
+			setPosition({ boundary.getLarge().x, getPosition().y, getPosition().z });
+		}
+		if (boundary.getLarge().z <= getPosition().z) {
+			setPosition({ getPosition().x, getPosition().y, boundary.getLarge().z });
+		}
 
 		if (is_recoil) {
 			setAccel(getVelocity() * -0.2f);
