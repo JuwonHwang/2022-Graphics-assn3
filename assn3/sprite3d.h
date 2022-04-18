@@ -72,6 +72,29 @@ public:
         setAccel(getAccel() + vec);
     }
 
+    virtual std::vector<glm::vec3> getCollider(const Transform t) {
+
+        Transform transform =  glm::translate(t, getPosition()+getVelocity());
+        transform = glm::rotate(transform, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+        transform = glm::rotate(transform, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
+        transform = glm::rotate(transform, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
+
+        Positions transformMask;
+        for (size_t i = 0; i < collider.size(); i++)
+        {
+            transformMask.push_back(transform * glm::vec4(collider[i], 1));
+        }
+
+        for (size_t i = 0; i < subSprite3Ds.size(); i++) {
+            Positions subMask = subSprite3Ds[i]->getCollider(transform);
+            for (size_t i = 0; i < subMask.size(); i++) {
+                transformMask.push_back(subMask[i]);
+            }
+        }
+
+        return transformMask;
+    }
+
     virtual void draw3d() {
         glPushMatrix();
         glTranslatef(getPosition().x, getPosition().y, getPosition().z);
