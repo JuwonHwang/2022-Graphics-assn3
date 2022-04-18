@@ -11,7 +11,8 @@ bool loadOBJ(
 	std::string path,
 	std::vector<glm::vec3>& out_vertices,
 	std::vector<glm::vec2>& out_uvs,
-	std::vector<glm::vec3>& out_normals
+	std::vector<glm::vec3>& out_normals,
+	std::vector<glm::vec3>& out_collider
 ) {
 	//std::cout << "Loading OBJ file " << path << std::endl;
 
@@ -41,6 +42,7 @@ bool loadOBJ(
 			fin >> vertex.x >> vertex.y >> vertex.z;
 			//std::cout << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
 			temp_vertices.push_back(vertex);
+			out_collider.push_back(vertex);
 		}
 		else if (lineHeader == "vt") {
 			glm::vec2 uv;

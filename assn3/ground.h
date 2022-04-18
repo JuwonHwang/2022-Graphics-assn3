@@ -19,9 +19,17 @@ public:
 
 	bool check2D(Position pos) {
 		if (large.x < pos.x && pos.x < small.x ||
-			large.y < pos.y && pos.y < small.y) {
+			large.z < pos.z && pos.z < small.z) {
 			return false;
 		}
+	}
+
+	Position getLarge() {
+		return large;
+	}
+
+	Position getSmall() {
+		return small;
 	}
 };
 
