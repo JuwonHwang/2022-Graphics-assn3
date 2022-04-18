@@ -35,6 +35,7 @@ private:
 	float power = 3.0f;
 	int hp = 3;
 	bool weak = false;
+	Color original;
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
@@ -54,8 +55,9 @@ public:
 			rightwheels.push_back(wheel);
 			addSprite3D(wheel);
 		}
-		setCollisionTag("tank");
-		move(Position(0, 2, 0));
+		setCollisionTag("obstacle");
+		original = _color;
+		move(Position(0, 1.5, 0));
 	}
 
 	void setAuto(bool a) {
@@ -75,18 +77,25 @@ public:
 		if (is_auto) {
 			autonomous();
 		}
-		getVelocity().y = 0.0f;
-		getAccel().y = 0.0f;
-		
+
 		std::set<std::string> tags = getCollisionGroup();
-		if (tags.find("tank") != tags.end()) {
+		if (tags.find("obstacle") != tags.end()) {
 			setVelocity({ 0,0,0 });
 		}
 		if (tags.find("bomb") != tags.end()) {
-
+			setColorAll(red);
+			hit();
+		}
+		else if(weak) {
+			setColorAll(darkgrey);
+		}
+		else if (getColor() != original) {
+			setColorAll(original * 0.1 + getColor() * 0.9);
 		}
 		
+		
 		Sprite3D::update();
+		
 
 		if (boundary.getSmall().x >= getPosition().x) {
 			setPosition({ boundary.getSmall().x, getPosition().y, getPosition().z });
@@ -128,6 +137,10 @@ public:
 	}
 
 	void turn(float speed) {
+		std::set<std::string> tags = getCollisionGroup();
+		if (tags.find("obstacle") != tags.end()) {
+			return;
+		}
 		turnLeftWheels(-speed);
 		turnRightWheels(speed);
 		rotate(glm::vec3(0, speed * 2, 0));
@@ -161,20 +174,38 @@ public:
 		return tip;
 	}
 
+	void setBarrelColorByPower() {
+		barrel->setColor(Color(
+			(power + 2) / 6 * getColor()[0],
+			(power + 2) / 6 * getColor()[1],
+			(power + 2) / 6 * getColor()[2]));
+	}
+
 	void powerUp() {
 		if (power < 5) {
 			power++;
 		}
+		setBarrelColorByPower();
 	}
 
 	void powerDown() {
 		if (power > 1) {
 			power--;
 		}
+		setBarrelColorByPower();
 	}
 
 	int getHp() {
 		return hp;
+	}
+
+	void hit() {
+		if (weak) {
+			hp = 0;
+		}
+		else {
+			hp--;
+		}
 	}
 
 	void setWeak(bool _weak) {
@@ -192,8 +223,8 @@ public:
 	}
 
 	void shoot(std::vector<Sprite3D*>* _group) {
-		if (!is_recoil && !resting) {
-			Bomb3D* bomb = new Bomb3D("bomb", purple, getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power / 2.0f);
+		if (!weak && !is_recoil && !resting) {
+			Bomb3D* bomb = new Bomb3D("bomb", barrel->getColor(), getPosition() + upperbody->getPosition() - getbarrelRPY() * 4.0f, { _group, &bombs }, -getbarrelRPY() * power / 2.0f);
 			recoil(power);
 		}
 	}
@@ -217,12 +248,11 @@ public:
 			status = todo;
 			break;
 		case TANKSTATUS::SHOOT:
-			shoot(&allGroups);
-			status = -1;
 			break;
 		default:
 			break;
 		}
+		shoot(&allGroups);
 		switch (status)
 		{
 		case TANKSTATUS::FORWARD:

@@ -20,7 +20,7 @@ public:
         }
         else {
             std::set<std::string> tags = getCollisionGroup();
-            if (tags.find("tank") != tags.end()) {
+            if (tags.find("obstacle") != tags.end()) {
                 this->kill();
                 return;
             }

@@ -23,9 +23,8 @@ Tank3D* enemy;
 Ground* ground;
 
 void init(void) {
-    //cube = new Sprite3D("Cube", grey, Position(0, 0, 0), { &allGroups }, "resource/body.obj");
-    tank = new Tank3D("tank", darkgrey, Position(0, 0, 10), { &allGroups });
-    enemy = new Tank3D("enemy", red, Position(0, 0, -10), { &allGroups });
+    tank = new Tank3D("tank", blue, Position(0, 0, 10), { &allGroups });
+    enemy = new Tank3D("enemy", yellow, Position(0, 0, -10), { &allGroups });
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
     ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 60,60 });
@@ -171,9 +170,11 @@ void timer(int value) {
         std::cout << "YOU WIN!!!" << std::endl;
         playing = false;
     }
-
-    glutTimerFunc(30, timer, 0);
+    else {
+        glutTimerFunc(30, timer, 0);
+    }
 }
+    
 
 void main(int argc, char** argv)
 {

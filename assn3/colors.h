@@ -29,6 +29,19 @@ public:
 		alpha = _color.alpha;
 	}
 
+	Color operator*(const float f) {
+		return Color(red * f, green * f, blue * f);
+	}
+
+	Color operator+(const Color& c) {
+		return Color(red + c.red, green + c.green, blue + c.blue);
+	}
+
+	bool operator!=(const Color& c) {
+		return (red != c.red) || (green != c.green) || (blue != c.blue);
+	}
+
+
 	float& operator [] (const int index)
 	{
 		if (index == 0) {
