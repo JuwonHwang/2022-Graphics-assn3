@@ -33,6 +33,8 @@ private:
 	float is_recoil = 0;
 	int resting = 0;
 	float power = 3.0f;
+	int hp = 3;
+	bool weak = false;
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
@@ -169,6 +171,14 @@ public:
 		if (power > 1) {
 			power--;
 		}
+	}
+
+	int getHp() {
+		return hp;
+	}
+
+	void setWeak(bool _weak) {
+		weak = _weak;
 	}
 
 	void recoil(float pow) {

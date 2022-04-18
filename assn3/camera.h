@@ -121,7 +121,7 @@ public:
 			);
 			break;
 		case cmode::TOP_VIEW:
-			glOrtho(-3, 3, -3, 3, -10, 10);
+			glOrtho(-5, 5, -5, 5, -10, 10);
 
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();

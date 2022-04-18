@@ -15,7 +15,6 @@
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
-bool hidden = false;
 
 Camera camera;
 Sprite3D* cube;
@@ -40,6 +39,15 @@ void renderScene(void)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+    glCullFace(GL_BACK);
+
+    if (hidden_line_removal) {
+        glEnable(GL_CULL_FACE);
+    }
+    else {
+        glDisable(GL_CULL_FACE);
+    }
+    
 
     switch (camera.getMode()) {
     case cmode::THIRD_PERSON:
@@ -113,18 +121,19 @@ void keyboard(unsigned char key, int x, int y) {
     case 'd':
         tank->rotateHead(-5);
         break;
-    case 'f':
-        break;
     case 'v':
         camera.ChangeMode();
         break;
     case 'r':
-        if (hidden == false) {
-            hidden = true;
-        }
-        else {
-            hidden = false;
-        }
+        hidden_line_removal = !hidden_line_removal;
+        break;
+    case 'c':
+        all_pass = !all_pass;
+        enemy->setWeak(all_pass);
+        break;
+    case 'f':
+        all_fail = !all_fail;
+        tank->setWeak(all_fail);
         break;
     }
 
@@ -149,6 +158,20 @@ void timer(int value) {
         }
     }
     glutPostRedisplay();
+
+    if (tank->getHp() <= 0 && enemy->getHp() <= 0) {
+        std::cout << "DRAW..." << std::endl;
+        playing = false;
+    }
+    else if (tank->getHp() <= 0) {
+        std::cout << "YOU LOSE!" << std::endl;
+        playing = false;
+    }
+    else if (enemy->getHp() <= 0) {
+        std::cout << "YOU WIN!!!" << std::endl;
+        playing = false;
+    }
+
     glutTimerFunc(30, timer, 0);
 }
 
