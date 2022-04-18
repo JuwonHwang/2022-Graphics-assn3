@@ -27,6 +27,7 @@ public:
 		for (size_t i = 0; i < std::min(size_t(3), m_points.size()); i++) {
 			points.push_back(m_points[i]);
 		}
+		m_points = points;
 		m_size = std::min(m_size + 1, 4u);
 	}
 
@@ -201,7 +202,7 @@ bool AABB(glm::vec4 p, glm::vec4 q) {
 	return true;
 }
 
-void checkAllCollision(std::vector<Sprite*> allGroup) {
+void checkAllCollision(std::vector<Sprite3D*> allGroup) {
 	for (size_t i = 0; i < allGroup.size(); i++) {
 		allGroup[i]->getCollisionGroup().clear();
 	}
@@ -216,7 +217,7 @@ void checkAllCollision(std::vector<Sprite*> allGroup) {
 			if (allGroup[j]->getCollisionTag() == "none") {
 				continue;
 			}
-			if (GJK_intersection(allGroup[i]->getCollisionMask(Position(0, 0, 0), 0.0f), allGroup[j]->getCollisionMask(Position(0, 0, 0), 0.0f))) {
+			if (GJK_intersection(allGroup[i]->getCollider(Transform(0.0f)), allGroup[j]->getCollider(Transform(0.0f)))) {
 			// if (AABB(allGroup[i]->getRectangle(allGroup[i]->getVelocity(), 0.0f), allGroup[j]->getRectangle(allGroup[j]->getVelocity(), 0.0f))) {
 				allGroup[i]->getCollisionGroup().insert(allGroup[j]->getCollisionTag());
 				allGroup[j]->getCollisionGroup().insert(allGroup[i]->getCollisionTag());
