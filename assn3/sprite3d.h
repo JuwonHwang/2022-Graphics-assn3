@@ -17,6 +17,9 @@ private:
     std::vector<std::vector<Sprite3D*>*> groups;
     std::vector<Sprite3D*> subSprite3Ds;
 
+    unsigned int VBO;
+    unsigned int VAO;
+
 public:
     Sprite3D() {
 
@@ -96,7 +99,7 @@ public:
 
     virtual void draw3d() {
         glPushMatrix();
-        glTranslatef(getPosition().x, getPosition().y, getPosition().z);
+        /*glTranslatef(getPosition().x, getPosition().y, getPosition().z);
         glRotatef(roll, 1.0f, 0.0f, 0.0f);
         glRotatef(pitch, 0.0f, 0.0f, 1.0f);
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
@@ -125,7 +128,30 @@ public:
         for (size_t i = 0; i < vertices.size(); i++) {
             glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
         }
-        glEnd();
+        glEnd();*/
+
+        glGenVertexArrays(1,&VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+        float datas[sizeof(vertices)*3];
+        for (size_t i = 0; i < vertices.size(); i++) {
+            for (int j = 0; j < 3; j++) {
+                datas[i*3+j] = vertices[i][j];
+            }
+        }
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(datas), datas, GL_STATIC_DRAW);
+
+
+
+
+
+
+
+
 
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->draw3d();
