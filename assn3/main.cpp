@@ -37,7 +37,7 @@ void renderScene(void)
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
+    /*glEnable(GL_DEPTH_TEST);
     glCullFace(GL_BACK);
 
     if (hidden_line_removal) {
@@ -45,7 +45,7 @@ void renderScene(void)
     }
     else {
         glDisable(GL_CULL_FACE);
-    }
+    }*/
     
 
     switch (camera.getMode()) {
