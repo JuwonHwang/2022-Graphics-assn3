@@ -1,109 +1,194 @@
-#include <stdio.h>
-#include <string>
-#include <vector>
+#pragma once
 #include <iostream>
-#include <fstream>
-#include <algorithm>
-using namespace std;
-
-#include <stdlib.h>
-#include <string.h>
-
 #include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <glm/vec3.hpp>
 
-GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path) {
+#include "textReader.h"
 
-	// Create the shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+//OpenGL
+void initGL();					//opengl 초기화
 
-	// Read the Vertex Shader code from the file
-	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if (VertexShaderStream.is_open()) {
-		std::string Line = "";
-		while (getline(VertexShaderStream, Line))
-			VertexShaderCode += "\n" + Line;
-		VertexShaderStream.close();
-	}
-	else {
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
-		getchar();
-		return 0;
-	}
+//GLUT
+void changeSize(int w, int h);	//윈도우 크기 변경 시 호출되는 callback
 
-	// Read the Fragment Shader code from the file
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if (FragmentShaderStream.is_open()) {
-		std::string Line = "";
-		while (getline(FragmentShaderStream, Line))
-			FragmentShaderCode += "\n" + Line;
-		FragmentShaderStream.close();
-	}
+//Rendering
+void display();				//기본 랜더링 코드
+float rotate_angle = 0.f;	//주전자 회전 animatio용 각도 회전 각도 변수
 
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
+//GLEW
+void initGLEW();			//GLEW 초기화
 
+//Shader
+GLuint v_shader;			//vertex shader handle
+GLuint f_shader;			//fragment shader handle
+GLuint program_shader;		//shader program handle
+void setShaders();			//Shader 설정
 
-	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
-	char const* VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-	glCompileShader(VertexShaderID);
+//Logging
+#define printOpenGLError() printOglError(__FILE__, __LINE__)
+int printOglError(char* file, int line);
+void printShaderInfoLog(GLuint obj);
+void printProgramInfoLog(GLuint obj);
 
-	// Check Vertex Shader
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
-		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
-	}
-
-
-
-	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
-	char const* FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-	glCompileShader(FragmentShaderID);
-
-	// Check Fragment Shader
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
-		std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
-	}
-
-
-
-	// Link the program
-	printf("Linking program\n");
-	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, VertexShaderID);
-	glAttachShader(ProgramID, FragmentShaderID);
-	glLinkProgram(ProgramID);
-
-	// Check the program
-	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
-		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
-	}
-
-
-	glDetachShader(ProgramID, VertexShaderID);
-	glDetachShader(ProgramID, FragmentShaderID);
-
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
-
-	return ProgramID;
+//////////////////////////
+void changeSize(int w, int h) {
+	if (h == 0)	h = 1;
+	float ratio = 1.f * w / h;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0, 0, w, h);
+	glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
+	glMatrixMode(GL_MODELVIEW);
 }
 
 
+void initGL()
+{
+	//Enable/Disable
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
+
+	//Rendering
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glFrontFace(GL_CCW);
+	glColor3f(0.0f, 0.5f, 1.0f);
+
+	//Light
+	GLfloat lightPos[] = { 0.f, 0.f, 10.f, 0.f };
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+	glEnable(GL_COLOR_MATERIAL);
+
+	//Modelview and projection
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void display()
+{
+	//Clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Draw
+	glPushMatrix();
+	glRotatef(rotate_angle, 0.f, 1.f, 0.f);
+	glutSolidTeapot(0.5);
+	glPopMatrix();
+	glFlush();
+	glutSwapBuffers();
+	rotate_angle = rotate_angle + 0.1f;
+	if (rotate_angle > 360.f) rotate_angle -= 360.f;
+}
+
+
+void initGLEW()
+{
+	//Initialize GLEW
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		exit(0);
+	}
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
+	//Check Shader
+	//ARB
+	if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)
+		printf("Ready for GLSL (ARB)\n");
+	else
+	{
+		printf("No GLSL support\n");
+		exit(0);
+	}
+
+}
+
+//GLuint v_shader, f_shader, program_shader
+void setShaders()
+{
+	char* vs = NULL, * fs = NULL, * fs2 = NULL;
+
+	v_shader = glCreateShader(GL_VERTEX_SHADER);
+	f_shader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	vs = textFileRead("vertex.shader");
+	fs = textFileRead("fragment.shader");
+
+	const char* vv = vs;
+	const char* ff = fs;
+
+	glShaderSource(v_shader, 1, &vv, NULL);
+	glShaderSource(f_shader, 1, &ff, NULL);
+
+	free(vs); free(fs);
+
+	glCompileShader(v_shader);
+	glCompileShader(f_shader);
+
+	printShaderInfoLog(v_shader);
+	printShaderInfoLog(f_shader);
+
+	program_shader = glCreateProgram();
+	glAttachShader(program_shader, v_shader);
+	glAttachShader(program_shader, f_shader);
+
+	glLinkProgram(program_shader);
+	printProgramInfoLog(program_shader);
+
+	glUseProgram(program_shader);
+}
+
+
+#define printOpenGLError() printOglError(__FILE__, __LINE__)
+int printOglError(char* file, int line)
+{
+	GLenum glErr;
+	int    retCode = 0;
+
+	glErr = glGetError();
+	while (glErr != GL_NO_ERROR)
+	{
+		printf("glError in file %s @ line %d: %s\n", file, line, gluErrorString(glErr));
+		retCode = 1;
+		glErr = glGetError();
+	}
+	return retCode;
+}
+
+void printShaderInfoLog(GLuint obj)
+{
+	int infologLength = 0;
+	int charsWritten = 0;
+	char* infoLog;
+
+	glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
+
+	if (infologLength > 0)
+	{
+		infoLog = (char*)malloc(infologLength);
+		glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
+		printf("%s\n", infoLog);
+		free(infoLog);
+	}
+}
+
+void printProgramInfoLog(GLuint obj)
+{
+	int infologLength = 0;
+	int charsWritten = 0;
+	char* infoLog;
+
+	glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
+
+	if (infologLength > 0)
+	{
+		infoLog = (char*)malloc(infologLength);
+		glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
+		printf("%s\n", infoLog);
+		free(infoLog);
+	}
+}

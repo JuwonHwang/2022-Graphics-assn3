@@ -168,6 +168,7 @@
     <ClInclude Include="spriteGroup.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tank3d.h" />
+    <ClInclude Include="textReader.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
