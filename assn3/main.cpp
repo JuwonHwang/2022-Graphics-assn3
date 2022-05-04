@@ -2,7 +2,9 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
+
 #include <vector>
+#include "shader.h"
 #include "tank.h"
 #include "bomb.h"
 #include "land.h"
@@ -16,11 +18,17 @@ bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
 
+GLuint programID = 0;
+GLuint vertexPosition_modelspaceID = 0;
+GLuint vertexbuffer = 0;
+
 Camera camera;
 Sprite3D* cube;
 Tank3D* tank;
 Tank3D* enemy;
 Ground* ground;
+
+
 
 void init(void) {
     tank = new Tank3D("tank", blue, Position(0, 0, 10), { &allGroups });
@@ -32,11 +40,12 @@ void init(void) {
 
 void renderScene(void)
 {
+    Transform p;
+
     if (!playing) {
         return;
     }
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glCullFace(GL_BACK);
 
@@ -50,28 +59,52 @@ void renderScene(void)
 
     switch (camera.getMode()) {
     case cmode::THIRD_PERSON:
-        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
+        p = camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
     case cmode::FIRST_PERSON:
-        camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
+        p = camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
         break;
     case cmode::TOP_VIEW:
-        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
+        p = camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
         break;
     default:
         break;
     }
-    glPushMatrix();
-    for (size_t i = 0; i < allGroups.size(); i++)
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Use our shader
+    glUseProgram(programID);
+
+    // 1rst attribute buffer : vertices
+    glEnableVertexAttribArray(vertexPosition_modelspaceID);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(
+        vertexPosition_modelspaceID, // The attribute we want to configure
+        3,                  // size
+        GL_FLOAT,           // type
+        GL_FALSE,           // normalized?
+        0,                  // stride
+        (void*)0            // array buffer offset
+    );
+
+    // Draw the triangle !
+    glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+
+
+
+    /*for (size_t i = 0; i < allGroups.size(); i++)
     {
         if (allGroups[i] != NULL) {
             allGroups[i]->draw3d();
         }
-    }
-    glPopMatrix();
-    glFlush();
-}
+    }*/
+    
+    std::cout << "ho" << std::endl;
 
+    glFlush();
+    glutSwapBuffers();
+}
 
 void specialkeyboard(int key, int x, int y) {
     if (!playing) {
@@ -174,23 +207,24 @@ void timer(int value) {
         glutTimerFunc(30, timer, 0);
     }
 }
-    
 
-void main(int argc, char** argv)
+int main(int argc, char** argv)
 {
-    srand(time(NULL));
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize(640, 640);
-    init();
-
-    glutCreateWindow("Bored Students - Assn3-1");
+    glutInitWindowSize(300, 300);
+    glutCreateWindow("OpenGL");
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutDisplayFunc(renderScene);
-    glutSpecialFunc(specialkeyboard);
-    glutKeyboardFunc(keyboard);
-    glutTimerFunc(0, timer, 0);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glutIdleFunc(renderScene);
+
+    init();
     glewInit();
+
+    // Create and compile our GLSL program from the shaders
+    programID = LoadShaders("vertex.shader", "fragment.shader");
+
+    
     glutMainLoop();
+    return 0;
 }

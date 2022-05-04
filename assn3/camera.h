@@ -38,10 +38,10 @@ public:
 
 	}
 
-	void View(Position target, glm::vec3 rpy, float recoil) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
+	Transform View(Position target, glm::vec3 rpy, float recoil) {
 
+
+		
 		glm::vec3 recoil_animation = util::vibrationVec(recoil / smooth);
 
 		target = pre_target * smooth + target * (1 - smooth);
@@ -50,20 +50,16 @@ public:
 		pre_target = target;
 		pre_rpy = rpy;
 
-
 		pre_eye = eye;
 		pre_center = center;
 		pre_up = up;
 
+		Transform p;
+
 		switch (mode)
 		{
 		case cmode::THIRD_PERSON:
-			gluPerspective(45, 1, 0.01, 100);
-
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-
-			glScalef(SCALE, SCALE, SCALE);
+			p = glm::perspective(45.0f, 1.0f, 0.01f, 100.0f);
 
 			eye = {
 				target.x + 30 * glm::sin(rpy.y * PI / 180),
@@ -81,20 +77,9 @@ public:
 			center = pre_center * smooth + center * (1 - smooth);
 			up = pre_up * smooth + up * (1 - smooth);
 
-			gluLookAt(
-				eye.x, eye.y, eye.z,
-				center.x, center.y, center.z,
-				up.x, up.y, up.z
-			);
-
 			break;
 		case cmode::FIRST_PERSON:
-			gluPerspective(45, 1, 0.01, 100);
-
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-
-			glScalef(SCALE, SCALE, SCALE);
+			p = glm::perspective(45.0f, 1.0f, 0.01f, 100.0f);
 
 			eye = {
 				target.x + rpy.x * 2,
@@ -114,19 +99,9 @@ public:
 			center = pre_center * smooth + center * (1 - smooth);
 			up = pre_up * smooth + up * (1 - smooth);
 
-			gluLookAt(
-				eye.x, eye.y, eye.z,
-				center.x, center.y, center.z,
-				up.x, up.y, up.z
-			);
 			break;
 		case cmode::TOP_VIEW:
-			glOrtho(-5, 5, -5, 5, -10, 10);
-
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-
-			glScalef(SCALE, SCALE, SCALE);
+			p = glm::ortho(-5, 5, -5, 5, -10, 10);
 
 			eye = {
 				0,10,0
@@ -142,17 +117,14 @@ public:
 			center = pre_center * smooth + center * (1 - smooth);
 			up = pre_up * smooth + up * (1 - smooth);
 
-			gluLookAt(
-				eye.x, eye.y, eye.z,
-				center.x, center.y, center.z,
-				up.x, up.y, up.z
-			);
-
 			break;
 		default:
 			break;
 		}
 
+		Transform l = glm::lookAt(eye, center, up);
+
+		return p * l;
 	}
 
 	void ChangeMode() {

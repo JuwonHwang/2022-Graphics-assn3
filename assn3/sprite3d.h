@@ -1,6 +1,10 @@
 #pragma once
+#include <stack>
 #include "sprite.h"
 #include "obj.h"
+#include <glm/vec3.hpp>
+
+std::stack<glm::mat4> model_view_mat;
 
 bool hidden_line_removal = false;
 
@@ -95,11 +99,13 @@ public:
     }
 
     virtual void draw3d() {
-        glPushMatrix();
-        glTranslatef(getPosition().x, getPosition().y, getPosition().z);
-        glRotatef(roll, 1.0f, 0.0f, 0.0f);
-        glRotatef(pitch, 0.0f, 0.0f, 1.0f);
-        glRotatef(yaw, 0.0f, 1.0f, 0.0f);
+        Transform t = model_view_mat.top();
+        t = glm::rotate(t, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+        t = glm::rotate(t, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
+        t = glm::rotate(t, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
+        t = glm::translate(t, getPosition());
+
+        model_view_mat.push(t);
 
         if (hidden_line_removal) {
             glColor3f(1.0f, 1.0f, 1.0f);
@@ -123,14 +129,17 @@ public:
 
         glBegin(GL_TRIANGLES);
         for (size_t i = 0; i < vertices.size(); i++) {
-            glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+            glm::vec3 dv = model_view_mat.top() * glm::vec4(vertices[i], 1.0f);
+            glVertex3f(dv.x, dv.y, dv.z);
         }
         glEnd();
 
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->draw3d();
         }
-        glPopMatrix();
+
+        model_view_mat.pop();
+
     }
 
     void setColorAll(Color c) {
