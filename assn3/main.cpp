@@ -224,6 +224,10 @@
 //    return 0;
 //}
 
+//Rendering
+void display();				//기본 랜더링 코드
+
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -244,3 +248,16 @@ int main(int argc, char** argv)
 	return 0;
 }
 
+void display()
+{
+	//Clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Draw
+	glPushMatrix();
+	glRotatef(90.f, 1.f, 0.f, 0.f);
+	glutSolidTeapot(0.5);
+	glPopMatrix();
+	glFlush();
+	glutSwapBuffers();
+}

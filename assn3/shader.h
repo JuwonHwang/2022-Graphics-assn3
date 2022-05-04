@@ -12,10 +12,6 @@ void initGL();					//opengl 초기화
 //GLUT
 void changeSize(int w, int h);	//윈도우 크기 변경 시 호출되는 callback
 
-//Rendering
-void display();				//기본 랜더링 코드
-float rotate_angle = 0.f;	//주전자 회전 animatio용 각도 회전 각도 변수
-
 //GLEW
 void initGLEW();			//GLEW 초기화
 
@@ -66,23 +62,6 @@ void initGL()
 	glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
 	glMatrixMode(GL_MODELVIEW);
 }
-
-void display()
-{
-	//Clear
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//Draw
-	glPushMatrix();
-	glRotatef(rotate_angle, 0.f, 1.f, 0.f);
-	glutSolidTeapot(0.5);
-	glPopMatrix();
-	glFlush();
-	glutSwapBuffers();
-	rotate_angle = rotate_angle + 0.1f;
-	if (rotate_angle > 360.f) rotate_angle -= 360.f;
-}
-
 
 void initGLEW()
 {
