@@ -37,6 +37,7 @@ void renderScene(void)
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
     /*glEnable(GL_DEPTH_TEST);
     glCullFace(GL_BACK);
 
@@ -67,8 +68,18 @@ void renderScene(void)
         if (allGroups[i] != NULL) {
             allGroups[i]->draw3d();
         }
+        glUseProgram(allGroups[i]->shaderProgram);
+        std::cout << "program";
+        glBindVertexArray(allGroups[i]->VAO);
+        std::cout << "bind vao";
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        std::cout << "draw";
+        glBindVertexArray(0);
+        std::cout << "bind 0";
     }
     glPopMatrix();
+
+
     glFlush();
 }
 

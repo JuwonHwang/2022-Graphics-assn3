@@ -18,9 +18,18 @@ private:
     std::vector<Sprite3D*> subSprite3Ds;
 
     unsigned int VBO;
-    unsigned int VAO;
+    //unsigned int VAO;
+    unsigned int vertexShader;
+    unsigned int fragmentShader;
+    //unsigned int shaderProgram;
+
+    const char* vs = "#version 330 core layout (location=0) in vec3 aPosition; void main(){ gl_Position=vec4(aPosition.x,aPosition.y,aPosition.z,1.0);}";
+    const char* fs = "#version 330 core out vec4 FragColor; void main(){ FragColor=vec4(1.0f,0.5f,0.2f,1.0f);}";
 
 public:
+    unsigned int VAO;
+    unsigned int shaderProgram;
+
     Sprite3D() {
 
     }
@@ -99,6 +108,19 @@ public:
 
     virtual void draw3d() {
         glPushMatrix();
+
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertexShader, 1, &vs, NULL);
+        glCompileShader(vertexShader);
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragmentShader, 1, &fs, NULL);
+        glCompileShader(fragmentShader);
+
+        shaderProgram = glCreateProgram();
+        glAttachShader(shaderProgram, vertexShader);
+        glAttachShader(shaderProgram, fragmentShader);
+        glLinkProgram(shaderProgram);
+
         /*glTranslatef(getPosition().x, getPosition().y, getPosition().z);
         glRotatef(roll, 1.0f, 0.0f, 0.0f);
         glRotatef(pitch, 0.0f, 0.0f, 1.0f);
@@ -136,25 +158,29 @@ public:
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-        float datas[sizeof(vertices)*3];
-        for (size_t i = 0; i < vertices.size(); i++) {
-            for (int j = 0; j < 3; j++) {
-                datas[i*3+j] = vertices[i][j];
-            }
+        //std::cout << sizeof(vertices);
+        float datas[3*sizeof(vertices)];
+        for (size_t i = 0; i < sizeof(vertices); i++) {
+            datas[3*i] = float(vertices[i].x);
+            datas[3*i+1] = float(vertices[i].y);
+            datas[3*i+2] = float(vertices[i].s);
+            std::cout << "datas problem";
         }
 
+        
         glBufferData(GL_ARRAY_BUFFER, sizeof(datas), datas, GL_STATIC_DRAW);
-
-
-
-
-
+        std::cout << "bufferdata";
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        std::cout << "attrib";
+        glEnableVertexAttribArray(0);
+        std::cout << "enable";
 
 
 
 
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->draw3d();
+            std::cout << "sub";
         }
         glPopMatrix();
     }
