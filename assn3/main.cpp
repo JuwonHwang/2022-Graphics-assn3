@@ -33,11 +33,11 @@ Ground* ground = 0;
 
 void init(void) {
     tank = new Tank3D("tank", blue, Position(0, 0, 0), { &allGroups });
-    //enemy = new Tank3D("enemy", yellow, Position(0, 0, -10), { &allGroups });
+    enemy = new Tank3D("enemy", yellow, Position(0, 0, -10), { &allGroups });
     //enemy->setAuto(true);
-    //enemy->rotate(glm::vec3(0, 180, 0));
-    //ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 60,60 });
-    cube = new Sprite3D("cube", red, Position(0, 0, 0), { &allGroups }, "resource/Cube.obj");
+    enemy->rotate(glm::vec3(0, 180, 0));
+    //ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
+    //cube = new Sprite3D("cube", red, Position(0, 0, 0), { &allGroups }, "resource/Cube.obj");
 }
 
 
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
     glutSpecialFunc(specialkeyboard);
     glutKeyboardFunc(keyboard);
     glutTimerFunc(0, timer, 0);
-
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     init();
 
 	initGLEW();

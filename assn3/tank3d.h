@@ -46,7 +46,7 @@ public:
 		addSprite3D(upperbody);
 		
 
-		/*for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 6; i++) {
 			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
 			leftwheels.push_back(wheel);
 			addSprite3D(wheel);
@@ -55,7 +55,7 @@ public:
 			Sprite3D* wheel = new Sprite3D("", _color, Position(-2.0f, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
 			rightwheels.push_back(wheel);
 			addSprite3D(wheel);
-		}*/
+		}
 
 		setCollisionTag("obstacle");
 		original = _color;

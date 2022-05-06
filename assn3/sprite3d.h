@@ -104,15 +104,11 @@ public:
         
         glm::mat4 t = model_view_mat.top();
         glm::mat4 mvp = glm::mat4(1.0f);
-        mvp = glm::rotate(t, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+        mvp = glm::translate(t, getPosition());
+        mvp = glm::rotate(mvp, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
         mvp = glm::rotate(mvp, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
         mvp = glm::rotate(mvp, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
-        mvp = glm::translate(mvp, getPosition());
         model_view_mat.push(mvp);
-
-        //for (size_t i = 0; i < subSprite3Ds.size(); i++) {
-        //    subSprite3Ds[i]->draw3d();
-        //}
 
         unsigned int VBO;
         glGenBuffers(1, &VBO);
@@ -132,7 +128,13 @@ public:
         int MVPLoc = glGetUniformLocation(program_shader, "MVP");
         glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
-        glDrawArrays(GL_LINES, 0, vertices.size());
+        for (size_t i = 0; i < vertices.size(); i++) {
+            glDrawArrays(GL_LINES, i, 3);
+        }
+
+        for (size_t i = 0; i < subSprite3Ds.size(); i++) {
+            subSprite3Ds[i]->draw3d();
+        }
 
         if(!model_view_mat.empty())model_view_mat.pop();
 
