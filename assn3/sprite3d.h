@@ -8,6 +8,9 @@
 glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
 
+int vertexColorLocation;
+int MVLoc;
+
 bool hidden_line_removal = false;
 
 class Sprite3D : public ColoredSprite {
@@ -22,6 +25,9 @@ private:
     std::vector<glm::vec3> collider;
     std::vector<std::vector<Sprite3D*>*> groups;
     std::vector<Sprite3D*> subSprite3Ds;
+
+    unsigned int VBO;
+    glm::mat4 mv;
 
 public:
     Sprite3D() {
@@ -38,6 +44,8 @@ public:
         for (size_t i = 0; i < _groups.size(); i++) {
             _groups[i]->push_back(this);
         }
+
+        glGenBuffers(1, &VBO);
 
     }
 
@@ -101,36 +109,39 @@ public:
     }
 
     virtual void draw3d() {
-        
+
         glm::mat4 t = model_view_mat.top();
-        glm::mat4 mvp = glm::mat4(1.0f);
-        mvp = glm::translate(t, getPosition());
-        mvp = glm::rotate(mvp, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
-        mvp = glm::rotate(mvp, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
-        mvp = glm::rotate(mvp, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
-        model_view_mat.push(mvp);
+        mv = glm::translate(t, getPosition());
+        mv = glm::rotate(mv, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+        mv = glm::rotate(mv, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
+        mv = glm::rotate(mv, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
+        model_view_mat.push(mv);
 
-        unsigned int VBO;
-        glGenBuffers(1, &VBO);
-
-        // 2. OpenGL이 사용하기 위해 vertex 리스트를 복사
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
-        // 3. 그런 다음 vertex 속성 포인터를 세팅
+
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
-        glUseProgram(program_shader);
+        glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
 
-        int vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
-        glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
-
-        int MVPLoc = glGetUniformLocation(program_shader, "MVP");
-        glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-
-        for (size_t i = 0; i < vertices.size(); i++) {
-            glDrawArrays(GL_LINES, i, 3);
+        if (hidden_line_removal) {
+            glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
+            for (size_t i = 0; i < vertices.size(); i++) {
+                glDrawArrays(GL_LINES, i, 3);
+            }
+            glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
+            for (size_t i = 0; i < vertices.size(); i++) {
+                glDrawArrays(GL_TRIANGLES, i, 3);
+            }
         }
+        else {
+            glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
+            for (size_t i = 0; i < vertices.size(); i++) {
+                glDrawArrays(GL_LINES, i, 3);
+            }
+        }
+        
 
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->draw3d();

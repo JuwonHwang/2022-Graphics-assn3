@@ -32,12 +32,11 @@ Tank3D* enemy = 0;
 Ground* ground = 0;
 
 void init(void) {
-    tank = new Tank3D("tank", blue, Position(0, 0, 0), { &allGroups });
+    tank = new Tank3D("tank", blue, Position(0, 0, 10), { &allGroups });
     enemy = new Tank3D("enemy", yellow, Position(0, 0, -10), { &allGroups });
-    //enemy->setAuto(true);
+    enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
-    //ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
-    //cube = new Sprite3D("cube", red, Position(0, 0, 0), { &allGroups }, "resource/Cube.obj");
+    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
 }
 
 
@@ -160,16 +159,21 @@ int main(int argc, char** argv)
     glutSpecialFunc(specialkeyboard);
     glutKeyboardFunc(keyboard);
     glutTimerFunc(0, timer, 0);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    init();
+
 
 	initGLEW();
 	setShaders();
 
     initGL();
 
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+
+    vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
+    MVLoc = glGetUniformLocation(program_shader, "MV");
+
+    init();
 
 	glutMainLoop();
 	return 0;
@@ -215,7 +219,10 @@ void display()
         break;
     }
 
-    model_view_mat.push(projection_view);
+    int PLoc = glGetUniformLocation(program_shader, "P");
+    glUniformMatrix4fv(PLoc, 1, GL_FALSE, glm::value_ptr(projection_view));
+
+    model_view_mat.push(glm::mat4(1.0f));
     for (size_t i = 0; i < allGroups.size(); i++)
     {
         if (allGroups[i] != NULL) {

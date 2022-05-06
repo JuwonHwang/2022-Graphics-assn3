@@ -44,15 +44,11 @@ void changeSize(int w, int h) {
 
 void initGL()
 {
-	//Enable/Disable
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 
 	//Rendering
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glFrontFace(GL_CCW);
-	glColor3f(0.0f, 0.5f, 1.0f);
 
 	//Modelview and projection
 	glMatrixMode(GL_PROJECTION);
