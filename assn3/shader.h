@@ -6,61 +6,13 @@
 
 #include "textReader.h"
 
-//OpenGL
-void initGL();					//opengl 초기화
-
-//GLEW
-void initGLEW();			//GLEW 초기화
-
-//Shader
-GLuint v_shader;			//vertex shader handle
-GLuint f_shader;			//fragment shader handle
-GLuint program_shader;		//shader program handle
-void setShaders();			//Shader 설정
+GLuint v_shader;
+GLuint f_shader;
+GLuint program_shader;
+void setShaders();
 
 GLuint MatrixID;
 GLuint vertexPosition_modelspaceID;
-
-//Logging
-#define printOpenGLError() printOglError(__FILE__, __LINE__)
-int printOglError(char* file, int line);
-void printShaderInfoLog(GLuint obj);
-void printProgramInfoLog(GLuint obj);
-
-void initGL()
-{
-	glEnable(GL_DEPTH_TEST);
-
-	//Rendering
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glFrontFace(GL_CCW);
-
-	//Modelview and projection
-	glMatrixMode(GL_PROJECTION);
-}
-
-void initGLEW()
-{
-	//Initialize GLEW
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-		exit(0);
-	}
-	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-
-	//Check Shader
-	//ARB
-	if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)
-		printf("Ready for GLSL (ARB)\n");
-	else
-	{
-		printf("No GLSL support\n");
-		exit(0);
-	}
-
-}
 
 //GLuint v_shader, f_shader, program_shader
 void setShaders()
@@ -84,66 +36,11 @@ void setShaders()
 	glCompileShader(v_shader);
 	glCompileShader(f_shader);
 
-	printShaderInfoLog(v_shader);
-	printShaderInfoLog(f_shader);
-
 	program_shader = glCreateProgram();
 	glAttachShader(program_shader, v_shader);
 	glAttachShader(program_shader, f_shader);
 
 	glLinkProgram(program_shader);
-	printProgramInfoLog(program_shader);
 
 	glUseProgram(program_shader);
-}
-
-
-#define printOpenGLError() printOglError(__FILE__, __LINE__)
-int printOglError(char* file, int line)
-{
-	GLenum glErr;
-	int    retCode = 0;
-
-	glErr = glGetError();
-	while (glErr != GL_NO_ERROR)
-	{
-		printf("glError in file %s @ line %d: %s\n", file, line, gluErrorString(glErr));
-		retCode = 1;
-		glErr = glGetError();
-	}
-	return retCode;
-}
-
-void printShaderInfoLog(GLuint obj)
-{
-	int infologLength = 0;
-	int charsWritten = 0;
-	char* infoLog;
-
-	glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
-
-	if (infologLength > 0)
-	{
-		infoLog = (char*)malloc(infologLength);
-		glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
-		printf("%s\n", infoLog);
-		free(infoLog);
-	}
-}
-
-void printProgramInfoLog(GLuint obj)
-{
-	int infologLength = 0;
-	int charsWritten = 0;
-	char* infoLog;
-
-	glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
-
-	if (infologLength > 0)
-	{
-		infoLog = (char*)malloc(infologLength);
-		glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
-		printf("%s\n", infoLog);
-		free(infoLog);
-	}
 }

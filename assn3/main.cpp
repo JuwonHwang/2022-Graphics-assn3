@@ -160,10 +160,8 @@ int main(int argc, char** argv)
     glutTimerFunc(0, timer, 0);
 
 
-	initGLEW();
+    glewInit();
 	setShaders();
-
-    initGL();
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glGenVertexArrays(1, &VAO);
