@@ -8,8 +8,6 @@
 glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
 
-glm::vec3 dir_light = glm::normalize(glm::vec3(0, -3, 10));
-
 int vertexColorLocation;
 int MVLoc;
 
