@@ -180,9 +180,9 @@ public:
 
 	void setBarrelColorByPower() {
 		barrel->setColor(Color(
-			std::min((power) / 2 * getColor()[0], 1.0f),
-			std::min((power) / 2 * getColor()[1], 1.0f),
-			std::min((power) / 2 * getColor()[2], 1.0f)));
+			std::min((power) / 5 * (getColor()[0] + 0.3f), 1.0f),
+			std::min((power) / 5 * (getColor()[1] + 0.3f), 1.0f),
+			std::min((power) / 5 * (getColor()[2] + 0.3f), 1.0f)));
 	}
 
 	void powerUp() {

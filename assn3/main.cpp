@@ -32,8 +32,8 @@ Tank3D* enemy = 0;
 Ground* ground = 0;
 
 void init(void) {
-    tank = new Tank3D("tank", blue, Position(0, 0, 10), { &allGroups });
-    enemy = new Tank3D("enemy", yellow, Position(0, 0, -10), { &allGroups });
+    tank = new Tank3D("tank", blue, Position(0, 0, 15), { &allGroups });
+    enemy = new Tank3D("enemy", yellow, Position(0, 0, -15), { &allGroups });
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
     ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
