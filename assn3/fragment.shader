@@ -1,8 +1,8 @@
-#version 120
+#version 330
 
 out vec4 FragColor;
 
-uniform vec4 ourColor; // OpenGL 코드에서 이 변수를 설정할 것입니다.
+uniform vec4 ourColor; 
 
 void main()
 {
