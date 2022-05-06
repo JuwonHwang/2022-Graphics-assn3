@@ -122,9 +122,9 @@ public:
 			break;
 		}
 
-		Transform l = glm::lookAt(eye, center, up);
+		Transform v = glm::lookAt(eye, center, up);
 
-		return p * l;
+		return p * v;
 	}
 
 	void ChangeMode() {

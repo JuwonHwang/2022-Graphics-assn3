@@ -21,6 +21,9 @@ GLuint f_shader;			//fragment shader handle
 GLuint program_shader;		//shader program handle
 void setShaders();			//Shader ¼³Á¤
 
+GLuint MatrixID;
+GLuint vertexPosition_modelspaceID;
+
 //Logging
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 int printOglError(char* file, int line);
@@ -51,16 +54,8 @@ void initGL()
 	glFrontFace(GL_CCW);
 	glColor3f(0.0f, 0.5f, 1.0f);
 
-	//Light
-	GLfloat lightPos[] = { 0.f, 0.f, 10.f, 0.f };
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	glEnable(GL_COLOR_MATERIAL);
-
 	//Modelview and projection
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
-	glMatrixMode(GL_MODELVIEW);
 }
 
 void initGLEW()

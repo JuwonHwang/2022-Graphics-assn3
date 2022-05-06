@@ -2,8 +2,10 @@
 #include <stack>
 #include "sprite.h"
 #include "obj.h"
+#include "shader.h"
 #include <glm/vec3.hpp>
 
+glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
 
 bool hidden_line_removal = false;
@@ -99,46 +101,40 @@ public:
     }
 
     virtual void draw3d() {
-        Transform t = model_view_mat.top();
-        t = glm::rotate(t, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
-        t = glm::rotate(t, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
-        t = glm::rotate(t, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
-        t = glm::translate(t, getPosition());
+        
+        glm::mat4 t = model_view_mat.top();
+        glm::mat4 mvp = glm::mat4(1.0f);
+        mvp = glm::rotate(t, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+        mvp = glm::rotate(mvp, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
+        mvp = glm::rotate(mvp, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
+        mvp = glm::translate(mvp, getPosition());
+        model_view_mat.push(mvp);
 
-        model_view_mat.push(t);
+        //for (size_t i = 0; i < subSprite3Ds.size(); i++) {
+        //    subSprite3Ds[i]->draw3d();
+        //}
 
-        if (hidden_line_removal) {
-            glColor3f(1.0f, 1.0f, 1.0f);
-            glPolygonMode(GL_FRONT, GL_FILL);
-            
-            glBegin(GL_TRIANGLES);
-            for (size_t i = 0; i < vertices.size(); i++) {
-                glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
-            }
-            glEnd();
-        }
+        unsigned int VBO;
+        glGenBuffers(1, &VBO);
 
-        glColor3f(getColor()[0], getColor()[1], getColor()[2]);
-        if (hidden_line_removal) {
-            glPolygonMode(GL_FRONT, GL_LINE);
-        }
-        else {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
-        glLineWidth(1.5);
+        // 2. OpenGL이 사용하기 위해 vertex 리스트를 복사
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
+        // 3. 그런 다음 vertex 속성 포인터를 세팅
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-        glBegin(GL_TRIANGLES);
-        for (size_t i = 0; i < vertices.size(); i++) {
-            glm::vec3 dv = model_view_mat.top() * glm::vec4(vertices[i], 1.0f);
-            glVertex3f(dv.x, dv.y, dv.z);
-        }
-        glEnd();
+        glUseProgram(program_shader);
 
-        for (size_t i = 0; i < subSprite3Ds.size(); i++) {
-            subSprite3Ds[i]->draw3d();
-        }
+        int vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
+        glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
 
-        model_view_mat.pop();
+        int MVPLoc = glGetUniformLocation(program_shader, "MVP");
+        glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+        glDrawArrays(GL_LINES, 0, vertices.size());
+
+        if(!model_view_mat.empty())model_view_mat.pop();
 
     }
 
