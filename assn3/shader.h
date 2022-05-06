@@ -30,18 +30,6 @@ int printOglError(char* file, int line);
 void printShaderInfoLog(GLuint obj);
 void printProgramInfoLog(GLuint obj);
 
-//////////////////////////
-void changeSize(int w, int h) {
-	if (h == 0)	h = 1;
-	float ratio = 1.f * w / h;
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glViewport(0, 0, w, h);
-	glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
-	glMatrixMode(GL_MODELVIEW);
-}
-
-
 void initGL()
 {
 	glEnable(GL_DEPTH_TEST);

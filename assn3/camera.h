@@ -101,7 +101,7 @@ public:
 
 			break;
 		case cmode::TOP_VIEW:
-			p = glm::ortho(-5, 5, -5, 5, -10, 10);
+			p = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.1f, 100.0f);
 
 			eye = {
 				0,10,0
