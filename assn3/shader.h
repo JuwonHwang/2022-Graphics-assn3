@@ -9,9 +9,6 @@
 //OpenGL
 void initGL();					//opengl 초기화
 
-//GLUT
-void changeSize(int w, int h);	//윈도우 크기 변경 시 호출되는 callback
-
 //GLEW
 void initGLEW();			//GLEW 초기화
 
