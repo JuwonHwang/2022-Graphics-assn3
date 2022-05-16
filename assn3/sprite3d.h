@@ -49,7 +49,7 @@ public:
 
     }
 
-    void kill() {
+    virtual void kill() {
         for (size_t i = 0; i < groups.size(); i++) {
             for (size_t j = 0; j < groups[i]->size(); j++) {
                 if (groups[i]->at(j) == this) {
