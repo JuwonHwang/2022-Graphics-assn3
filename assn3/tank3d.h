@@ -44,7 +44,8 @@ public:
 		barrel = new Sprite3D("", _color, Position(0.0f, 0.0f, 0.0f), {}, "resource/barrel.obj");
 		upperbody->addSprite3D(barrel);
 		addSprite3D(upperbody);
-		//name_tag = _name;
+		
+
 		for (int i = 0; i < 6; i++) {
 			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
 			leftwheels.push_back(wheel);
@@ -55,6 +56,7 @@ public:
 			rightwheels.push_back(wheel);
 			addSprite3D(wheel);
 		}
+
 		setCollisionTag("obstacle");
 		original = _color;
 		move(Position(0, 1.5, 0));
@@ -178,9 +180,9 @@ public:
 
 	void setBarrelColorByPower() {
 		barrel->setColor(Color(
-			(power + 2) / 6 * getColor()[0],
-			(power + 2) / 6 * getColor()[1],
-			(power + 2) / 6 * getColor()[2]));
+			std::min((power) / 5 * (getColor()[0] + 0.3f), 1.0f),
+			std::min((power) / 5 * (getColor()[1] + 0.3f), 1.0f),
+			std::min((power) / 5 * (getColor()[2] + 0.3f), 1.0f)));
 	}
 
 	void powerUp() {

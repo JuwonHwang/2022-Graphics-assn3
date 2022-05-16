@@ -2,7 +2,13 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
+
+
+#include "textReader.h"
+#include "shader.h"
+
 #include <vector>
+
 #include "tank.h"
 #include "bomb.h"
 #include "land.h"
@@ -11,65 +17,26 @@
 #include "tank3d.h"
 #include "ground.h"
 #include "camera.h"
+#include "util.h"
+
+unsigned int VAO;
 
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
 
 Camera camera;
-Sprite3D* cube;
-Tank3D* tank;
-Tank3D* enemy;
-Ground* ground;
+Sprite3D* cube = 0;
+Tank3D* tank = 0;
+Tank3D* enemy = 0;
+Ground* ground = 0;
 
 void init(void) {
-    tank = new Tank3D("tank", blue, Position(0, 0, 10), { &allGroups });
-    enemy = new Tank3D("enemy", yellow, Position(0, 0, -10), { &allGroups });
+    tank = new Tank3D("tank", blue, Position(0, 0, 15), { &allGroups });
+    enemy = new Tank3D("enemy", yellow, Position(0, 0, -15), { &allGroups });
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
-    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 60,60 });
-}
-
-void renderScene(void)
-{
-    if (!playing) {
-        return;
-    }
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glCullFace(GL_BACK);
-
-    if (hidden_line_removal) {
-        glEnable(GL_CULL_FACE);
-    }
-    else {
-        glDisable(GL_CULL_FACE);
-    }
-    
-
-    switch (camera.getMode()) {
-    case cmode::THIRD_PERSON:
-        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
-        break;
-    case cmode::FIRST_PERSON:
-        camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
-        break;
-    case cmode::TOP_VIEW:
-        camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
-        break;
-    default:
-        break;
-    }
-    glPushMatrix();
-    for (size_t i = 0; i < allGroups.size(); i++)
-    {
-        if (allGroups[i] != NULL) {
-            allGroups[i]->draw3d();
-        }
-    }
-    glPopMatrix();
-    glFlush();
+    ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
 }
 
 
@@ -158,15 +125,15 @@ void timer(int value) {
     }
     glutPostRedisplay();
 
-    if (tank->getHp() <= 0 && enemy->getHp() <= 0) {
+    if (tank && tank->getHp() <= 0 && enemy && enemy->getHp() <= 0) {
         std::cout << "DRAW..." << std::endl;
         playing = false;
     }
-    else if (tank->getHp() <= 0) {
+    else if (tank && tank->getHp() <= 0) {
         std::cout << "YOU LOSE!" << std::endl;
         playing = false;
     }
-    else if (enemy->getHp() <= 0) {
+    else if (enemy && enemy->getHp() <= 0) {
         std::cout << "YOU WIN!!!" << std::endl;
         playing = false;
     }
@@ -174,23 +141,94 @@ void timer(int value) {
         glutTimerFunc(30, timer, 0);
     }
 }
-    
 
-void main(int argc, char** argv)
+//Rendering
+void display();				//기본 랜더링 코드
+
+
+int main(int argc, char** argv)
 {
-    srand(time(NULL));
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
-    glutInitWindowPosition(100, 100);
-    glutInitWindowSize(640, 640);
-    init();
-
-    glutCreateWindow("Bored Students - Assn3-1");
-    glutDisplayFunc(renderScene);
+	glutInit(&argc, argv);
+	glutInitWindowPosition(100, 100);
+	glutInitWindowSize(600, 600);
+	glutCreateWindow("OpenGL");
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutDisplayFunc(display);
+	glutIdleFunc(display);
     glutSpecialFunc(specialkeyboard);
     glutKeyboardFunc(keyboard);
     glutTimerFunc(0, timer, 0);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+
     glewInit();
-    glutMainLoop();
+	setShaders();
+
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
+    MVLoc = glGetUniformLocation(program_shader, "MV");
+
+    init();
+
+	glutMainLoop();
+	return 0;
+}
+
+void display()
+{
+    if (!playing) {
+        return;
+    }
+
+	//Clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_DEPTH_TEST);
+    glCullFace(GL_BACK);
+
+    // ..:: 드로잉 코드 (렌더링 루프 내부) :: ..
+    // 4. 오브젝트를 그립니다.
+    glUseProgram(program_shader);
+    glBindVertexArray(VAO);
+
+    if (hidden_line_removal) {
+        glEnable(GL_CULL_FACE);
+    }
+    else {
+        glDisable(GL_CULL_FACE);
+    }
+
+    //Draw
+
+    switch (camera.getMode()) {
+    case cmode::THIRD_PERSON:
+        projection_view = camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
+        break;
+    case cmode::FIRST_PERSON:
+        projection_view = camera.View(tank->getPosition(), tank->getbarrelRPY(), tank->getRecoil());
+        break;
+    case cmode::TOP_VIEW:
+        projection_view = camera.View(tank->getPosition(), tank->getRPY(), tank->getRecoil());
+        break;
+    default:
+        break;
+    }
+
+    int PLoc = glGetUniformLocation(program_shader, "P");
+    glUniformMatrix4fv(PLoc, 1, GL_FALSE, glm::value_ptr(projection_view));
+
+    model_view_mat.push(glm::mat4(1.0f));
+    for (size_t i = 0; i < allGroups.size(); i++)
+    {
+        if (allGroups[i] != NULL) {
+            allGroups[i]->draw3d();
+        }
+    }
+    while (!model_view_mat.empty())model_view_mat.pop();
+
+
+	glFlush();
+	glutSwapBuffers();
 }
