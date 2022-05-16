@@ -10,6 +10,10 @@ public:
 		lightTag = _lightTag;
 	}
 
+	virtual void draw3d() {
+		// remove draw
+	}
+
 	void setLightTag(std::string _lightTag) {
 		lightTag = _lightTag;
 	}
@@ -27,5 +31,9 @@ public:
 
 	}
 
+	
 
+	virtual void getLight() {
+
+	}
 };
