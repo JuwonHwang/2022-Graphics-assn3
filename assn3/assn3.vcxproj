@@ -161,12 +161,14 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="land.h" />
     <ClInclude Include="obj.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="shapes.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="sprite3d.h" />
     <ClInclude Include="spriteGroup.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tank3d.h" />
+    <ClInclude Include="textReader.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +176,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.shader" />
+    <None Include="vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

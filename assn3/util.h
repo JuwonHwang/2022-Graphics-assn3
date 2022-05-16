@@ -34,4 +34,15 @@ namespace util {
 	bool SameDirection(const glm::vec3& a, const glm::vec3& v){
 		return glm::dot(a,v) > 0;
 	}
+
+	void printMatrix(glm::mat4 m) {
+		std::cout << "=========" << std::endl;
+		for (int i = 0; i < 4; i++) {
+			std::cout << "(";
+			for (int j = 0; j < 4; j++) {
+				std::cout << m[i][j]<< " ";
+			}
+			std::cout << ")" << std::endl;
+		}
+	}
 }

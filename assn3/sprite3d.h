@@ -1,6 +1,15 @@
 #pragma once
+#include <stack>
 #include "sprite.h"
 #include "obj.h"
+#include "shader.h"
+#include <glm/vec3.hpp>
+
+glm::mat4 projection_view = glm::mat4(1.0f);
+std::stack<glm::mat4> model_view_mat;
+
+int vertexColorLocation;
+int MVLoc;
 
 bool hidden_line_removal = false;
 
@@ -16,6 +25,9 @@ private:
     std::vector<glm::vec3> collider;
     std::vector<std::vector<Sprite3D*>*> groups;
     std::vector<Sprite3D*> subSprite3Ds;
+
+    unsigned int VBO;
+    glm::mat4 mv;
 
 public:
     Sprite3D() {
@@ -33,6 +45,8 @@ public:
             _groups[i]->push_back(this);
         }
 
+        glGenBuffers(1, &VBO);
+
     }
 
     void kill() {
@@ -46,6 +60,7 @@ public:
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->kill();
         }
+        glDeleteBuffers(1, &VBO);
         delete this;
     }
 
@@ -95,42 +110,51 @@ public:
     }
 
     virtual void draw3d() {
-        glPushMatrix();
-        glTranslatef(getPosition().x, getPosition().y, getPosition().z);
-        glRotatef(roll, 1.0f, 0.0f, 0.0f);
-        glRotatef(pitch, 0.0f, 0.0f, 1.0f);
-        glRotatef(yaw, 0.0f, 1.0f, 0.0f);
+
+        glm::mat4 t = model_view_mat.top();
+        mv = glm::translate(t, getPosition());
+        mv = glm::rotate(mv, yaw * PI / 180, glm::vec3(0.0f, 1.0f, 0.0f));
+        mv = glm::rotate(mv, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
+        mv = glm::rotate(mv, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
+        model_view_mat.push(mv);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
+
+        
 
         if (hidden_line_removal) {
-            glColor3f(1.0f, 1.0f, 1.0f);
-            glPolygonMode(GL_FRONT, GL_FILL);
-            
-            glBegin(GL_TRIANGLES);
+            glLineWidth(1.5f);
+            glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
             for (size_t i = 0; i < vertices.size(); i++) {
-                glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+                glDrawArrays(GL_LINES, i, 3);
             }
-            glEnd();
-        }
 
-        glColor3f(getColor()[0], getColor()[1], getColor()[2]);
-        if (hidden_line_removal) {
-            glPolygonMode(GL_FRONT, GL_LINE);
+            glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
+            for (size_t i = 0; i < vertices.size(); i++) {
+                glDrawArrays(GL_TRIANGLES, i, 3);
+            }
         }
         else {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glLineWidth(1.0f);
+            glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
+            for (size_t i = 0; i < vertices.size(); i++) {
+                glDrawArrays(GL_LINES, i, 3);
+            }
         }
-        glLineWidth(1.5);
-
-        glBegin(GL_TRIANGLES);
-        for (size_t i = 0; i < vertices.size(); i++) {
-            glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
-        }
-        glEnd();
+        
 
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->draw3d();
         }
-        glPopMatrix();
+
+        if(!model_view_mat.empty())model_view_mat.pop();
+
     }
 
     void setColorAll(Color c) {
