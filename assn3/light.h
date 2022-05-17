@@ -42,7 +42,7 @@ class PointLight : public Light {
 private:
 
 public:
-	PointLight(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) : Light(_name, "d", _color, _position, _groups) {
+	PointLight(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) : Light(_name, "p", _color, _position, _groups) {
 
 	}
 

@@ -13,6 +13,9 @@ uniform float Shininess;
 void main(void)
 {
 	//gl_Position = P * MV * vec4(vPosition, 1.0f);
+	//LP = (0.0, 0.0, 0.0, 0.0);
+	//Shininess = 0;
+	
 	vec3 pos = (MV * vPosition).xyz;
 
 	vec3 L = normalize(LP.xyz - pos);
