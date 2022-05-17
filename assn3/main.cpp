@@ -186,6 +186,7 @@ int main(int argc, char** argv)
     dp = glGetUniformLocation(program_shader, "DP");
     sp = glGetUniformLocation(program_shader, "SP");
     shn = glGetUniformLocation(program_shader, "Shininess");
+    gr = glGetUniformLocation(program_shader, "is_gouraud");
 
     init();
 

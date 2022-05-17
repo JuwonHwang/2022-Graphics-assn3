@@ -22,17 +22,9 @@ void setShaders()
 
 	v_shader = glCreateShader(GL_VERTEX_SHADER);
 	f_shader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	if (gouraud) {
-		vs = textFileRead("vertex_gouraud.shader");
-		fs = textFileRead("fragment_gouraud.shader");
-	}
-	else {
-		vs = textFileRead("vertex_phong.shader");
-		fs = textFileRead("fragment_phong.shader");
-	}
-	//vs = textFileRead("vertex.shader");
-	//fs = textFileRead("fragment.shader");
+	
+	vs = textFileRead("vertex.shader");
+	fs = textFileRead("fragment.shader");
 
 	const char* vv = vs;
 	const char* ff = fs;

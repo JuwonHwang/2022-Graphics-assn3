@@ -11,7 +11,7 @@ std::stack<glm::mat4> model_view_mat;
 int vertexColorLocation;
 int MVLoc;
 int lightPos;
-int ap, dp, sp, shn;
+int ap, dp, sp, shn, gr;
 
 bool hidden_line_removal = false;
 
@@ -127,11 +127,17 @@ public:
         glEnableVertexAttribArray(0);
 
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
-        glUniform4f(lightPos, 0, 0, 1.0f, 0);
+        glUniform4f(lightPos, 0.0f, 1.0f, 1.0f, 0.0f);
         glUniform4f(ap, 0.5f, 0.5f, 0.5f, 0.5f);
-        glUniform4f(dp, 0.5f, 0.5f, 0.5f, 0.5f);
-        glUniform4f(sp, 0.5f, 0.5f, 0.5f, 0.5f);
+        glUniform4f(dp, 0.5f, 0.5f, 0.5f, 1.0f);
+        glUniform4f(sp, 0.5f, 0.5f, 0.5f, 1.0f);
         glUniform1f(shn, 1);
+        if (gouraud) {
+            glUniform1f(gr, true);
+        }
+        else {
+            glUniform1f(gr, false);
+        }
 
         
 
