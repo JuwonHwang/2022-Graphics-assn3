@@ -2,6 +2,7 @@
 
 #include "sprite3d.h"
 
+
 class Light: public Sprite3D {
 private:
 	std::string lightTag = "";

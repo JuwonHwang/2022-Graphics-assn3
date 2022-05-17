@@ -10,6 +10,8 @@ std::stack<glm::mat4> model_view_mat;
 
 int vertexColorLocation;
 int MVLoc;
+int lightPos;
+int ap, dp, sp, shn;
 
 bool hidden_line_removal = false;
 
@@ -125,15 +127,20 @@ public:
         glEnableVertexAttribArray(0);
 
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
+        glUniform4f(lightPos, 0, 0, 1.0f, 0);
+        glUniform4f(ap, 0.5f, 0.5f, 0.5f, 0.5f);
+        glUniform4f(dp, 0.5f, 0.5f, 0.5f, 0.5f);
+        glUniform4f(sp, 0.5f, 0.5f, 0.5f, 0.5f);
+        glUniform1f(shn, 1);
 
         
 
         if (hidden_line_removal) {
-            glLineWidth(1.5f);
-            glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
+            /*glLineWidth(1.5f);
+            glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
             for (size_t i = 0; i < vertices.size(); i++) {
                 glDrawArrays(GL_LINES, i, 3);
-            }
+            }*/
 
             glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
             for (size_t i = 0; i < vertices.size(); i++) {

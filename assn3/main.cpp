@@ -181,6 +181,11 @@ int main(int argc, char** argv)
 
     vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
     MVLoc = glGetUniformLocation(program_shader, "MV");
+    lightPos = glGetUniformLocation(program_shader, "LP");
+    ap = glGetUniformLocation(program_shader, "AP");
+    dp = glGetUniformLocation(program_shader, "DP");
+    sp = glGetUniformLocation(program_shader, "SP");
+    shn = glGetUniformLocation(program_shader, "Shininess");
 
     init();
 

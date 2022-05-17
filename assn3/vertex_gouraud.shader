@@ -1,6 +1,6 @@
 #version 330
 
-in vec4 vPosition;
+in vec3 vPosition;
 in vec3 vNormal;
 out vec4 color; // vertex shade
 
@@ -13,10 +13,8 @@ uniform float Shininess;
 void main(void)
 {
 	//gl_Position = P * MV * vec4(vPosition, 1.0f);
-	//LP = (0.0, 0.0, 0.0, 0.0);
-	//Shininess = 0;
 	
-	vec3 pos = (MV * vPosition).xyz;
+	vec3 pos = (MV * vec4(vPosition, 1.0f)).xyz;
 
 	vec3 L = normalize(LP.xyz - pos);
 	vec3 E = normalize(-pos);
@@ -30,7 +28,7 @@ void main(void)
 	vec4 specular = Ks * SP;
 
 	if (dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
-	gl_Position = P * MV * vPosition;
+	gl_Position = P * MV * vec4(vPosition, 1.0f);
 	color = ambient + diffuse + specular;
 	color.a = 1.0;
 
