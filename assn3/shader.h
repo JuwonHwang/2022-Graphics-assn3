@@ -9,6 +9,7 @@
 GLuint v_shader;
 GLuint f_shader;
 GLuint program_shader;
+bool gouraud = true;
 void setShaders();
 
 GLuint MatrixID;
@@ -27,10 +28,11 @@ void setShaders()
 		fs = textFileRead("fragment_gouraud.shader");
 	}
 	else {
-
+		vs = textFileRead("vertex_phong.shader");
+		fs = textFileRead("fragment_phong.shader");
 	}
-	vs = textFileRead("vertex.shader");
-	fs = textFileRead("fragment.shader");
+	//vs = textFileRead("vertex.shader");
+	//fs = textFileRead("fragment.shader");
 
 	const char* vv = vs;
 	const char* ff = fs;

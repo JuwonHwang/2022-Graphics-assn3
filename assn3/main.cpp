@@ -25,7 +25,6 @@ unsigned int VAO;
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
-bool gouraud = true;
 bool diff_tex_mapping = true;
 bool normal_mapping = true;
 
