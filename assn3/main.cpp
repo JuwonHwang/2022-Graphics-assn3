@@ -17,6 +17,7 @@
 #include "tank3d.h"
 #include "ground.h"
 #include "camera.h"
+#include "light.h"
 #include "util.h"
 
 unsigned int VAO;
@@ -24,6 +25,9 @@ unsigned int VAO;
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
+bool gouraud = true;
+bool diff_tex_mapping = true;
+bool normal_mapping = true;
 
 Camera camera;
 Sprite3D* cube = 0;
@@ -100,6 +104,15 @@ void keyboard(unsigned char key, int x, int y) {
     case 'f':
         all_fail = !all_fail;
         tank->setWeak(all_fail);
+        break;
+    case 'x': // Gouraud shading & Phong shading
+        gouraud = !gouraud;
+        break;
+    case 't': // Diffuse texture mapping
+        diff_tex_mapping = !diff_tex_mapping;
+        break;
+    case 'n': // Normal mapping
+        normal_mapping = !normal_mapping;
         break;
     }
 

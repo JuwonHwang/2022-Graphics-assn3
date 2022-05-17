@@ -90,5 +90,17 @@
     <None Include="vertex.shader">
       <Filter>소스 파일</Filter>
     </None>
+    <None Include="vertex_gouraud.shader">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="vertex_phong.shader">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="fragment_gouraud.shader">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="fragment_phong.shader">
+      <Filter>소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

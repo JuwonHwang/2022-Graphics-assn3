@@ -180,7 +180,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.shader" />
+    <None Include="fragment_gouraud.shader" />
+    <None Include="fragment_phong.shader" />
     <None Include="vertex.shader" />
+    <None Include="vertex_gouraud.shader" />
+    <None Include="vertex_phong.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
