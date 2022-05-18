@@ -155,6 +155,7 @@
     <ClInclude Include="bomb3D.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="checkerboard.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="collision3D.h" />
     <ClInclude Include="colors.h" />

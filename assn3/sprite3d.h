@@ -4,6 +4,7 @@
 #include "obj.h"
 #include "shader.h"
 #include <glm/vec3.hpp>
+#include "checkerboard.h"
 
 glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
@@ -13,6 +14,9 @@ int vertexColorLocation;
 int MVLoc;
 int lightPos;
 int ap, dp, sp, shn, gr;
+checkerboard cb;
+// Create one OpenGL texture
+GLuint textureID;
 
 bool hidden_line_removal = false;
 
@@ -116,6 +120,20 @@ public:
     }
 
     virtual void draw3d() {
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(1, &textureID);
+
+        // "Bind" the newly created texture : all future texture functions will modify this texture
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        // Give the image to OpenGL
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &cb);
+
+
 
         glm::mat4 t = model_view_mat.top();
         mv = glm::translate(t, getPosition());
@@ -123,6 +141,7 @@ public:
         mv = glm::rotate(mv, pitch * PI / 180, glm::vec3(0.0f, 0.0f, 1.0f));
         mv = glm::rotate(mv, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
         model_view_mat.push(mv);
+
 
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
@@ -167,6 +186,7 @@ public:
                 glDrawArrays(GL_LINES, i, 3);
             }
         }
+
         
 
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {

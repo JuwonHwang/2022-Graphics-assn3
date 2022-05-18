@@ -72,6 +72,9 @@
     <ClInclude Include="light.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="checkerboard.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt">

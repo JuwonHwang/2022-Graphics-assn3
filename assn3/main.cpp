@@ -19,7 +19,6 @@
 #include "camera.h"
 #include "light.h"
 #include "util.h"
-#include "light.h"
 
 unsigned int VAO;
 

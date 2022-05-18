@@ -172,6 +172,7 @@ public:
             glVertex3f(drawPosition[0], drawPosition[1], drawPosition[1]);
         }
         glEnd();
+
     }
 
     virtual const glm::vec4 getRectangle(const Position _position, const float _rotation) {
