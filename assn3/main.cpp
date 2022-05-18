@@ -274,9 +274,9 @@ void display()
         glUniform4f(pointLightsLoc[i], light.x, light.y, light.z, 1.0f);
     }
 
-    glUniform4f(ap, 0.3f, 0.3f, 0.3f, 1.0f);
-    glUniform4f(dp, 0.2f, 0.2f, 0.2f, 1.0f);
-    glUniform4f(sp, 0.3f, 0.3f, 0.3f, 1.0f);
+    glUniform4f(ap, 0.1f, 0.1f, 0.1f, 1.0f);
+    glUniform4f(dp, 0.4f, 0.4f, 0.4f, 1.0f);
+    glUniform4f(sp, 0.5f, 0.5f, 0.5f, 1.0f);
     glUniform1f(shn, 1);
     if (gouraud) {
         glUniform1f(gr, true);
