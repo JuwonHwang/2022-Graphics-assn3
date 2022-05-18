@@ -2,6 +2,7 @@
 
 layout (location = 0) in vec4 vPosition;
 layout (location = 1) in vec3 vNormal;
+layout (location = 2) in vec2 vUV;
 out vec4 color; // vertex shade
 
 uniform vec4 AP, DP, SP; // Ambient product, Diffuse product, Specular product
@@ -17,12 +18,13 @@ out vec3 fN;
 out vec3 fL;
 out vec3 fE;
 out vec3 fPL[10];
+out vec2 fUV;
 
 vec4 calcPointLight(vec4 pointLight, vec3 mvPos);
 
 void main(void)
 {
-	//gl_Position = P * MV * vec4(vPosition, 1.0f);
+	fUV = vUV;
 	if (is_gouraud) {
 		vec3 pos = (MV * vPosition).xyz;
 

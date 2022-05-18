@@ -4,6 +4,7 @@ out vec4 FragColor;
 
 uniform vec4 ourColor; 
 
+in vec2 fUV;
 in vec3 fN;
 in vec3 fL;
 in vec3 fE;
@@ -19,12 +20,18 @@ uniform bool is_gouraud;
 uniform int pointLightNum;
 uniform vec4 pointLights[10];
 
+uniform int tex_mapping;
+uniform sampler2D ourTexture;
+
 vec4 FcalcPointLight(vec3 PL, vec3 N, vec3 E);
 
 void main()
 {
 	if (is_gouraud) {
-		FragColor = color * ourColor;
+        FragColor = color * ourColor;
+        if (tex_mapping == 0) {
+            FragColor = texture(ourTexture, fUV) * color;
+        }
 	}
 	else {
         vec3 N = normalize(fN);

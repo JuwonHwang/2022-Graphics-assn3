@@ -39,27 +39,33 @@ private:
 
 public:
 	Tank3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups) 
-		: Sprite3D(_name, _color,_position,_groups, "resource/body.obj") {
-		upperbody = new Sprite3D("", _color, upperbodyPos, {}, "resource/upperbody.obj");
-		barrel = new Sprite3D("", _color, Position(0.0f, 0.0f, 0.0f), {}, "resource/barrel.obj");
+		: Sprite3D(_name, _color,_position,_groups, "resource/body") {
+		upperbody = new Sprite3D("", _color, upperbodyPos, {}, "resource/upperbody");
+		barrel = new Sprite3D("", _color, Position(0.0f, 0.0f, 0.0f), {}, "resource/barrel");
 		upperbody->addSprite3D(barrel);
 		addSprite3D(upperbody);
 		
 
 		for (int i = 0; i < 6; i++) {
-			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
+			Sprite3D* wheel = new Sprite3D("", _color, Position(2.0, -1.0f, -2.5f + i), {}, "resource/wheel");
 			leftwheels.push_back(wheel);
 			addSprite3D(wheel);
+			wheel->setTexture(textures[4]);
 		}
 		for (int i = 0; i < 6; i++) {
-			Sprite3D* wheel = new Sprite3D("", _color, Position(-2.0f, -1.0f, -2.5f + i), {}, "resource/wheel.obj");
+			Sprite3D* wheel = new Sprite3D("", _color, Position(-2.0f, -1.0f, -2.5f + i), {}, "resource/wheel");
 			rightwheels.push_back(wheel);
 			addSprite3D(wheel);
+			wheel->setTexture(textures[4]);
 		}
 
 		setCollisionTag("obstacle");
 		original = _color;
 		move(Position(0, 1.5, 0));
+		setTexture(textures[2]);
+		upperbody->setTexture(textures[1]);
+		barrel->setTexture(textures[3]);
+
 	}
 
 	void setAuto(bool a) {

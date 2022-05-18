@@ -37,12 +37,66 @@ Ground* ground = 0;
 Sun* sun = 0;
 
 void init(void) {
+
+    glGenTextures(1, &textures[0]);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    textureLoader("resource/plane.jpg");
+
+    glGenTextures(1, &textures[1]);
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    textureLoader("resource/upperbody.jpg");
+
+    glGenTextures(1, &textures[2]);
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    textureLoader("resource/body.jpg");
+
+    glGenTextures(1, &textures[3]);
+    glBindTexture(GL_TEXTURE_2D, textures[3]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    textureLoader("resource/barrel.jpg");
+
+    glGenTextures(1, &textures[4]);
+    glBindTexture(GL_TEXTURE_2D, textures[4]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    textureLoader("resource/wheel.jpg");
+
+    glGenTextures(1, &textures[5]);
+    glBindTexture(GL_TEXTURE_2D, textures[5]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    textureLoader("resource/ball.jpg");
+
+
     tank = new Tank3D("tank", blue, Position(0, 0, 15), { &allGroups });
     enemy = new Tank3D("enemy", yellow, Position(0, 0, -15), { &allGroups });
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
     ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
     sun = new Sun();
+
+
+
+
 }
 
 
@@ -168,6 +222,15 @@ void timer(int value) {
     else {
         glutTimerFunc(30, timer, 0);
     }
+
+    if (!playing) {
+        auto l = datas.begin();
+        while (l != datas.end()) {
+            free(l->second->data);
+            free(l->second);
+            l++;
+        }
+    }
 }
 
 //Rendering
@@ -204,6 +267,7 @@ int main(int argc, char** argv)
     sp = glGetUniformLocation(program_shader, "SP");
     shn = glGetUniformLocation(program_shader, "Shininess");
     gr = glGetUniformLocation(program_shader, "is_gouraud");
+    texMappingLoc = glGetUniformLocation(program_shader, "tex_mapping");
     pointLightNumLoc = glGetUniformLocation(program_shader, "pointLightNum");
     pointLightsLoc[0] = glGetUniformLocation(program_shader, "pointLights[0]");
     pointLightsLoc[1] = glGetUniformLocation(program_shader, "pointLights[1]");
@@ -273,6 +337,8 @@ void display()
         glm::vec3 light = pointLights[i]->getLight();
         glUniform4f(pointLightsLoc[i], light.x, light.y, light.z, 1.0f);
     }
+
+    glUniform1i(texMappingLoc, diff_tex_mapping);
 
     glUniform4f(ap, 0.1f, 0.1f, 0.1f, 1.0f);
     glUniform4f(dp, 0.4f, 0.4f, 0.4f, 1.0f);

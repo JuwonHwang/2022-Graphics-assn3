@@ -43,12 +43,14 @@ public:
 
 	Ground(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups, std::string path,
 		glm::vec2 _size)
-		: Sprite3D(_name, _color, _position, _groups, "resource/plane.obj") {
+		: Sprite3D(_name, _color, _position, _groups, "resource/plane") {
 		size = _size;
+		setTexture(textures[0]);
 		for (int i = 0; i < size.x; i++) {
 			for (int j = 0; j < size.y; j++) {
-				Sprite3D* plane = new Sprite3D("plane" + std::to_string(i) + std::to_string(j), grey, Position((i - size.x * 0.5) * 8, 0, (j - size.y * 0.5) * 8), {}, "resource/plane.obj");
+				Sprite3D* plane = new Sprite3D("plane" + std::to_string(i) + std::to_string(j), grey, Position((i - size.x * 0.5) * 8, 0, (j - size.y * 0.5) * 8), {}, "resource/plane");
 				addSprite3D(plane);
+				plane->setTexture(textures[0]);
 			}
 		}
 	}

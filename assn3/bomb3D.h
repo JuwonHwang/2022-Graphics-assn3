@@ -10,12 +10,13 @@ private:
     PointLight* light = 0;
 public:
     Bomb3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups, Position _vel)
-        :Sprite3D(_name, _color, _position, _groups, "resource/ball.obj") {
+        :Sprite3D(_name, _color, _position, _groups, "resource/ball") {
         setVelocity(_vel);
         setAccel(glm::vec3(0.0f, -0.03f, 0.0f));
         setCollisionTag("bomb");
         light = new PointLight("pointlight", white, getPosition() + Position(0.0f, 2.0f, 0.0f), {});
         pointLights.push_back(light);
+        setTexture(textures[5]);
     }
 
     virtual void update() {

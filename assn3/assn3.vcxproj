@@ -167,9 +167,11 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="sprite3d.h" />
     <ClInclude Include="spriteGroup.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tank3d.h" />
     <ClInclude Include="textReader.h" />
+    <ClInclude Include="texture_loader.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>

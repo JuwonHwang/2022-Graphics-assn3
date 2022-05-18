@@ -4,12 +4,12 @@
 #include "obj.h"
 #include "shader.h"
 #include <glm/vec3.hpp>
-
+#include "texture_loader.h"
 glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
 glm::vec3 dirLight;
 
-
+int texMappingLoc;
 int pointLightNumLoc;
 int PLoc;
 int vertexColorLocation;
@@ -19,6 +19,8 @@ int pointLightsLoc[10];
 int ap, dp, sp, shn, gr;
 
 bool hidden_line_removal = false;
+
+unsigned int textures[10];
 
 class Sprite3D : public ColoredSprite {
 private:
@@ -33,8 +35,10 @@ private:
     std::vector<std::vector<Sprite3D*>*> groups;
     std::vector<Sprite3D*> subSprite3Ds;
 
+    unsigned int texture = -1;
     unsigned int vertexBuffer;
     unsigned int normalBuffer;
+    unsigned int uvBuffer;
     glm::mat4 mv;
 
 public:
@@ -44,8 +48,12 @@ public:
 
     Sprite3D(std::string _name, Color _color, Position _position, std::vector<std::vector<Sprite3D*>*> _groups, std::string path): ColoredSprite(_color, _name, _position) {
         
-        if(!path.empty())
-            loadShape(path);
+        if (!path.empty())
+        {
+            loadShape(path+".obj");
+        }
+            
+            
 
         groups = _groups;
         //std::cout << getName() << " - group size : " << _groups.size() << std::endl;
@@ -55,7 +63,8 @@ public:
 
         glGenBuffers(1, &vertexBuffer);
         glGenBuffers(1, &normalBuffer);
-
+        glGenBuffers(1, &uvBuffer);
+        
     }
 
     virtual void kill() {
@@ -72,6 +81,10 @@ public:
         glDeleteBuffers(1, &vertexBuffer);
         glDeleteBuffers(1, &vertexBuffer);
         delete this;
+    }
+
+    void setTexture(unsigned int t) {
+        texture = t;
     }
 
     bool loadShape(std::string path) {
@@ -128,17 +141,29 @@ public:
         mv = glm::rotate(mv, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
         model_view_mat.push(mv);
 
+
+        // vertex
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
+        // normal
         glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
         glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0][0], GL_STATIC_DRAW);
         
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(1);
+        
+        // uv 
+        glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+        glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0][0], GL_STATIC_DRAW);
+
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(2);
+
+        glBindTexture(GL_TEXTURE_2D, texture);
 
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
 
