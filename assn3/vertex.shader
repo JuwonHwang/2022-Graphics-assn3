@@ -38,7 +38,7 @@ void main(void)
 		color.a = 1.0;
 	}
 	else {
-		fN = vNormal;
+		fN = normalize(MV * vec4(vNormal, 0.0)).xyz;
 		fE = -vPosition.xyz;
 		fL = LP.xyz;
 
