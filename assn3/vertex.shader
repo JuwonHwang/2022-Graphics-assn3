@@ -9,13 +9,14 @@ uniform vec4 LP; // Light position
 uniform mat4 MV;
 uniform mat4 P;
 uniform float Shininess;
-uniform bool is_gouraud; 
+uniform bool is_gouraud;
 uniform int pointLightNum;
 uniform vec4 pointLights[10];
 
 out vec3 fN;
 out vec3 fL;
 out vec3 fE;
+out vec3 fPL[10];
 
 vec4 calcPointLight(vec4 pointLight, vec3 mvPos);
 
@@ -48,12 +49,18 @@ void main(void)
 	}
 	else {
 		fN = normalize(MV * vec4(vNormal, 0.0)).xyz;
-		fE = -vPosition.xyz;
+		fE = -(MV * vPosition).xyz;
 		fL = LP.xyz;
-
 		if (LP.w != 0.0) {
-			fL = LP.xyz - vPosition.xyz;
+			fL = LP.xyz + fE;
 		}
+		for (int i = 0; i < pointLightNum; i++) {
+			fPL[i] = pointLights[i].xyz;
+			if (pointLights[i].w != 0.0) {
+				fPL[i] = pointLights[i].xyz + fE;
+			}
+		}
+
 		gl_Position = P * MV * vPosition;
 	}
 
@@ -66,14 +73,14 @@ vec4 calcPointLight(vec4 pointLight, vec3 mvPos) {
 	vec3 H = normalize(L + E);
 	vec3 N = normalize(MV * vec4(vNormal, 0.0)).xyz;
 
-	vec4 ambient = 0.2 * AP;
+	vec4 ambient = AP;
 	float Kd = max(dot(L, N), 0.0);
-	vec4 diffuse = 0.2 * Kd * DP;
+	vec4 diffuse = Kd * DP;
 	float Ks = pow(max(dot(N, H), 0.0), Shininess);
 	vec4 specular = Ks * SP;
 
 	float d = length(L);
-	float att = min(1.0 / (0.1 + d * 1.0 + d * d * 2.0), 1);
+	float att = min(1.0 / (0.1 + d * 2.0 + d * d * 4.0), 1);
 
 	if (dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 	vec4 _color = att * (ambient + diffuse + specular);

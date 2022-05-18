@@ -275,8 +275,8 @@ void display()
     }
 
     glUniform4f(ap, 0.3f, 0.3f, 0.3f, 1.0f);
-    glUniform4f(dp, 0.5f, 0.5f, 0.5f, 1.0f);
-    glUniform4f(sp, 0.5f, 0.5f, 0.5f, 1.0f);
+    glUniform4f(dp, 0.2f, 0.2f, 0.2f, 1.0f);
+    glUniform4f(sp, 0.3f, 0.3f, 0.3f, 1.0f);
     glUniform1f(shn, 1);
     if (gouraud) {
         glUniform1f(gr, true);

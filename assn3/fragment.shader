@@ -8,6 +8,7 @@ in vec3 fN;
 in vec3 fL;
 in vec3 fE;
 in vec4 color;
+in vec3 fPL[10];
 
 uniform vec4 AP, DP, SP;
 uniform vec4 LP; // Light position
@@ -17,6 +18,8 @@ uniform float Shininess;
 uniform bool is_gouraud;
 uniform int pointLightNum;
 uniform vec4 pointLights[10];
+
+vec4 FcalcPointLight(vec3 PL, vec3 N, vec3 E);
 
 void main()
 {
@@ -37,8 +40,31 @@ void main()
 
         if (dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-        vec4 lighting_color = ambient + diffuse + specular;
+        vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+        for (int i = 0; i < pointLightNum; i++)
+            result += FcalcPointLight(fPL[i], N, E);
+
+        vec4 lighting_color = ambient + diffuse + specular + result;
         lighting_color.a = 1.0;
         FragColor = lighting_color * ourColor;
 	}
+}
+
+
+vec4 FcalcPointLight(vec3 PL, vec3 N, vec3 E) {
+    vec3 fplight = normalize(PL);
+    vec3 H = normalize(fplight + E);
+    vec4 ambient = AP;
+    float Kd = max(dot(fplight, N), 0.0);
+    vec4 diffuse = Kd * DP;
+    float Ks = pow(max(dot(N, H), 0.0), Shininess);
+    vec4 specular = Ks * SP;
+
+    if (dot(fplight, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
+
+    float d = length(PL);
+    float att = min(1.0 / (0.01 + d * 0.1 + d * d * 0.1), 1);
+
+    vec4 lighting_color = att * (ambient + diffuse + specular);
+    return lighting_color;
 }

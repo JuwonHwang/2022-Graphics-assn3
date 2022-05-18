@@ -56,7 +56,7 @@ public:
 	}
 	
 	virtual void update() {
-		angle += 10.0f;
+		angle += 5.0f;
 		if (angle > 360.0f) {
 			angle -= 360.0f;
 		}
