@@ -160,6 +160,7 @@
     <ClInclude Include="colors.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="land.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="obj.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shapes.h" />
