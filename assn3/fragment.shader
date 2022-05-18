@@ -54,6 +54,9 @@ void main()
         vec4 lighting_color = ambient + diffuse + specular + result;
         lighting_color.a = 1.0;
         FragColor = lighting_color * ourColor;
+        if (tex_mapping == 0) {
+            FragColor = texture(ourTexture, fUV) * lighting_color;
+        }
 	}
 }
 
@@ -70,7 +73,7 @@ vec4 FcalcPointLight(vec3 PL, vec3 N, vec3 E) {
     if (dot(fplight, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 
     float d = length(PL);
-    float att = min(1.0 / (0.01 + d * 0.1 + d * d * 0.1), 1);
+    float att = 0.5 * min(1.0 / (0.01 + d * 0.1 + d * d * 0.1), 1);
 
     vec4 lighting_color = att * (ambient + diffuse + specular);
     return lighting_color;

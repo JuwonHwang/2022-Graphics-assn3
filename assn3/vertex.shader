@@ -82,7 +82,7 @@ vec4 calcPointLight(vec4 pointLight, vec3 mvPos) {
 	vec4 specular = Ks * SP;
 
 	float d = length(L);
-	float att = min(1.0 / (0.01 + d * 0.1 + d * d * 1), 1);
+	float att = 0.5 * min(1.0 / (0.01 + d * 0.1 + d * d * 1), 1);
 
 	if (dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 	vec4 _color = att * (ambient + diffuse + specular);
