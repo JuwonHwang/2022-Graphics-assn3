@@ -17,6 +17,7 @@ int MVLoc;
 int lightPos;
 int pointLightsLoc[10];
 int ap, dp, sp, shn, gr;
+int is_planeLoc;
 
 bool hidden_line_removal = false;
 
@@ -85,6 +86,10 @@ public:
 
     void setTexture(unsigned int t) {
         texture = t;
+    }
+
+    unsigned int getTexture() {
+        return texture;
     }
 
     bool loadShape(std::string path) {
@@ -164,8 +169,9 @@ public:
         glEnableVertexAttribArray(2);
 
         glBindTexture(GL_TEXTURE_2D, texture);
-
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
+
+        glUniform1i(is_planeLoc, getTexture()==0);
 
         if (hidden_line_removal) {
             //glUniform4f(vertexColorLocation, 0.0f, 0.0f, 0.0f, 1.0f);

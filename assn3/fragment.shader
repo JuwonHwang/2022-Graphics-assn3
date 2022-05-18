@@ -20,8 +20,10 @@ uniform bool is_gouraud;
 uniform int pointLightNum;
 uniform vec4 pointLights[10];
 
+uniform bool is_plane;
 uniform int tex_mapping;
 uniform sampler2D ourTexture;
+uniform sampler2D normalMap;
 
 vec4 FcalcPointLight(vec3 PL, vec3 N, vec3 E);
 
@@ -30,11 +32,14 @@ void main()
 	if (is_gouraud) {
         FragColor = color * ourColor;
         if (tex_mapping == 0) {
-            FragColor = texture(ourTexture, fUV) * color;
+            FragColor =(texture(ourTexture, fUV) + ourColor) * color;
         }
 	}
 	else {
         vec3 N = normalize(fN);
+        if (is_plane) {
+
+        }
         vec3 E = normalize(fE);
         vec3 L = normalize(fL);
 
@@ -55,7 +60,7 @@ void main()
         lighting_color.a = 1.0;
         FragColor = lighting_color * ourColor;
         if (tex_mapping == 0) {
-            FragColor = texture(ourTexture, fUV) * lighting_color;
+            FragColor = (texture(ourTexture, fUV)+ ourColor) * lighting_color;
         }
 	}
 }
@@ -73,7 +78,7 @@ vec4 FcalcPointLight(vec3 PL, vec3 N, vec3 E) {
     if (dot(fplight, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 
     float d = length(PL);
-    float att = 0.5 * min(1.0 / (0.01 + d * 0.1 + d * d * 0.1), 1);
+    float att = min(1.0 / (1.0 + d * 0.09 + d * d * 0.032), 1);
 
     vec4 lighting_color = att * (ambient + diffuse + specular);
     return lighting_color;

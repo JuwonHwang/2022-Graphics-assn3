@@ -267,6 +267,7 @@ int main(int argc, char** argv)
     sp = glGetUniformLocation(program_shader, "SP");
     shn = glGetUniformLocation(program_shader, "Shininess");
     gr = glGetUniformLocation(program_shader, "is_gouraud");
+    is_planeLoc = glGetUniformLocation(program_shader, "is_plane");
     texMappingLoc = glGetUniformLocation(program_shader, "tex_mapping");
     pointLightNumLoc = glGetUniformLocation(program_shader, "pointLightNum");
     pointLightsLoc[0] = glGetUniformLocation(program_shader, "pointLights[0]");

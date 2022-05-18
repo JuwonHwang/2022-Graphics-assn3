@@ -108,5 +108,6 @@ bool loadOBJ(
 
 	}
 
+
 	return true;
 }
