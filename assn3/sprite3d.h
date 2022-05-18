@@ -10,9 +10,13 @@ glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
 glm::vec3 dirLight;
 
+
+int pointLightNumLoc;
+int PLoc;
 int vertexColorLocation;
 int MVLoc;
 int lightPos;
+int pointLightsLoc[10];
 int ap, dp, sp, shn, gr;
 checkerboard cb;
 // Create one OpenGL texture
@@ -156,18 +160,6 @@ public:
         glEnableVertexAttribArray(1);
 
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
-        glUniform4f(ap, 0.3f, 0.3f, 0.3f, 1.0f);
-        glUniform4f(dp, 0.5f, 0.5f, 0.5f, 1.0f);
-        glUniform4f(sp, 0.5f, 0.5f, 0.5f, 1.0f);
-        glUniform1f(shn, 1);
-        if (gouraud) {
-            glUniform1f(gr, true);
-        }
-        else {
-            glUniform1f(gr, false);
-        }
-
-        
 
         if (hidden_line_removal) {
             //glUniform4f(vertexColorLocation, 0.0f, 0.0f, 0.0f, 1.0f);

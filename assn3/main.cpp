@@ -139,6 +139,17 @@ void timer(int value) {
             j++;
         }
     }
+
+    std::vector<PointLight*>::iterator k = pointLights.begin();
+    while (k != pointLights.end()) {
+        if (*k == NULL) {
+            k = pointLights.erase(k);
+        }
+        else {
+            k++;
+        }
+    }
+
     glutPostRedisplay();
 
     if (tank && tank->getHp() <= 0 && enemy && enemy->getHp() <= 0) {
@@ -183,6 +194,7 @@ int main(int argc, char** argv)
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
+    PLoc = glGetUniformLocation(program_shader, "P");
     vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
     MVLoc = glGetUniformLocation(program_shader, "MV");
     lightPos = glGetUniformLocation(program_shader, "LP");
@@ -191,6 +203,18 @@ int main(int argc, char** argv)
     sp = glGetUniformLocation(program_shader, "SP");
     shn = glGetUniformLocation(program_shader, "Shininess");
     gr = glGetUniformLocation(program_shader, "is_gouraud");
+    pointLightNumLoc = glGetUniformLocation(program_shader, "pointLightNum");
+    pointLightsLoc[0] = glGetUniformLocation(program_shader, "pointLights[0]");
+    pointLightsLoc[1] = glGetUniformLocation(program_shader, "pointLights[1]");
+    pointLightsLoc[2] = glGetUniformLocation(program_shader, "pointLights[2]");
+    pointLightsLoc[3] = glGetUniformLocation(program_shader, "pointLights[3]");
+    pointLightsLoc[4] = glGetUniformLocation(program_shader, "pointLights[4]");
+    pointLightsLoc[5] = glGetUniformLocation(program_shader, "pointLights[5]");
+    pointLightsLoc[6] = glGetUniformLocation(program_shader, "pointLights[6]");
+    pointLightsLoc[7] = glGetUniformLocation(program_shader, "pointLights[7]");
+    pointLightsLoc[8] = glGetUniformLocation(program_shader, "pointLights[8]");
+    pointLightsLoc[9] = glGetUniformLocation(program_shader, "pointLights[9]");
+
 
     init();
 
@@ -238,10 +262,27 @@ void display()
         break;
     }
 
-    int PLoc = glGetUniformLocation(program_shader, "P");
     glUniformMatrix4fv(PLoc, 1, GL_FALSE, glm::value_ptr(projection_view));
     glUniform4f(lightPos, dirLight.x, dirLight.y, dirLight.z, 0.0f);
-    //printVector(dirLight);
+
+
+    glUniform1i(pointLightNumLoc, (GLint)pointLights.size());
+    //std::cout << pointLightNumLoc << " ,, " << pointLights.size() << std::endl;
+    for (size_t i = 0; i < std::min(pointLights.size(),(size_t)10); i++) {
+        glm::vec3 light = pointLights[i]->getLight();
+        glUniform4f(pointLightsLoc[i], light.x, light.y, light.z, 1.0f);
+    }
+
+    glUniform4f(ap, 0.3f, 0.3f, 0.3f, 1.0f);
+    glUniform4f(dp, 0.2f, 0.2f, 0.2f, 1.0f);
+    glUniform4f(sp, 0.3f, 0.3f, 0.3f, 1.0f);
+    glUniform1f(shn, 1);
+    if (gouraud) {
+        glUniform1f(gr, true);
+    }
+    else {
+        glUniform1f(gr, false);
+    }
 
     model_view_mat.push(glm::mat4(1.0f));
     for (size_t i = 0; i < allGroups.size(); i++)

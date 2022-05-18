@@ -2,6 +2,7 @@
 
 #include "sprite3d.h"
 
+
 class Light: public Sprite3D {
 private:
 	std::string lightTag = "";
@@ -55,7 +56,7 @@ public:
 	}
 	
 	virtual void update() {
-		angle += 10.0f;
+		angle += 5.0f;
 		if (angle > 360.0f) {
 			angle -= 360.0f;
 		}
@@ -77,9 +78,7 @@ public:
 
 	}
 
-
-
 	virtual glm::vec3 getLight() {
-
+		return getPosition();
 	}
 };
