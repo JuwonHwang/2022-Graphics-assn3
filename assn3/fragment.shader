@@ -15,6 +15,8 @@ uniform mat4 MV;
 uniform mat4 P;
 uniform float Shininess;
 uniform bool is_gouraud;
+uniform int pointLightNum;
+uniform vec4 pointLights[10];
 
 void main()
 {

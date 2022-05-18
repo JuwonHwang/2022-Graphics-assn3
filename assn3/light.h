@@ -2,6 +2,7 @@
 
 #include "sprite3d.h"
 
+
 class Light: public Sprite3D {
 private:
 	std::string lightTag = "";
@@ -77,9 +78,7 @@ public:
 
 	}
 
-
-
 	virtual glm::vec3 getLight() {
-
+		return getPosition();
 	}
 };
