@@ -7,9 +7,16 @@
 
 glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
+glm::vec3 dirLight;
 
+
+int pointLightNumLoc;
+int PLoc;
 int vertexColorLocation;
 int MVLoc;
+int lightPos;
+int pointLightsLoc[10];
+int ap, dp, sp, shn, gr;
 
 bool hidden_line_removal = false;
 
@@ -26,7 +33,8 @@ private:
     std::vector<std::vector<Sprite3D*>*> groups;
     std::vector<Sprite3D*> subSprite3Ds;
 
-    unsigned int VBO;
+    unsigned int vertexBuffer;
+    unsigned int normalBuffer;
     glm::mat4 mv;
 
 public:
@@ -45,11 +53,12 @@ public:
             _groups[i]->push_back(this);
         }
 
-        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &vertexBuffer);
+        glGenBuffers(1, &normalBuffer);
 
     }
 
-    void kill() {
+    virtual void kill() {
         for (size_t i = 0; i < groups.size(); i++) {
             for (size_t j = 0; j < groups[i]->size(); j++) {
                 if (groups[i]->at(j) == this) {
@@ -60,7 +69,8 @@ public:
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->kill();
         }
-        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &vertexBuffer);
+        glDeleteBuffers(1, &vertexBuffer);
         delete this;
     }
 
@@ -118,23 +128,25 @@ public:
         mv = glm::rotate(mv, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
         model_view_mat.push(mv);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
+        glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0][0], GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
 
-        
-
         if (hidden_line_removal) {
-            glLineWidth(1.5f);
-            glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
-            for (size_t i = 0; i < vertices.size(); i++) {
-                glDrawArrays(GL_LINES, i, 3);
-            }
-
+            //glUniform4f(vertexColorLocation, 0.0f, 0.0f, 0.0f, 1.0f);
+            //for (size_t i = 0; i < vertices.size(); i++) {
+            //    glDrawArrays(GL_LINES, i, 3);
+            //}
             glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
             for (size_t i = 0; i < vertices.size(); i++) {
                 glDrawArrays(GL_TRIANGLES, i, 3);

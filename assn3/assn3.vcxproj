@@ -160,6 +160,7 @@
     <ClInclude Include="colors.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="land.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="obj.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shapes.h" />
@@ -179,7 +180,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.shader" />
+    <None Include="fragment_gouraud.shader" />
+    <None Include="fragment_phong.shader" />
     <None Include="vertex.shader" />
+    <None Include="vertex_gouraud.shader" />
+    <None Include="vertex_phong.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
