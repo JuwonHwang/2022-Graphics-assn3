@@ -124,6 +124,7 @@ void keyboard(unsigned char key, int x, int y) {
 void timer(int value) {
     checkAllCollision(allGroups);
     sun->update();
+    dirLight = sun->getLight();
     for (size_t i = 0; i < allGroups.size(); i++)
     {
         if (allGroups[i] != NULL) {
@@ -240,6 +241,8 @@ void display()
 
     int PLoc = glGetUniformLocation(program_shader, "P");
     glUniformMatrix4fv(PLoc, 1, GL_FALSE, glm::value_ptr(projection_view));
+    glUniform4f(lightPos, dirLight.x, dirLight.y, dirLight.z, 0.0f);
+    //printVector(dirLight);
 
     model_view_mat.push(glm::mat4(1.0f));
     for (size_t i = 0; i < allGroups.size(); i++)

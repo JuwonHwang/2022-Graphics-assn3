@@ -7,6 +7,7 @@
 
 glm::mat4 projection_view = glm::mat4(1.0f);
 std::stack<glm::mat4> model_view_mat;
+glm::vec3 dirLight;
 
 int vertexColorLocation;
 int MVLoc;
@@ -136,8 +137,7 @@ public:
         glEnableVertexAttribArray(1);
 
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
-        glUniform4f(lightPos, 0.0f, 1.0f, 1.0f, 0.0f);
-        glUniform4f(ap, 0.5f, 0.5f, 0.5f, 0.5f);
+        glUniform4f(ap, 0.3f, 0.3f, 0.3f, 1.0f);
         glUniform4f(dp, 0.5f, 0.5f, 0.5f, 1.0f);
         glUniform4f(sp, 0.5f, 0.5f, 0.5f, 1.0f);
         glUniform1f(shn, 1);
@@ -151,12 +151,10 @@ public:
         
 
         if (hidden_line_removal) {
-            /*glLineWidth(1.5f);
-            glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
-            for (size_t i = 0; i < vertices.size(); i++) {
-                glDrawArrays(GL_LINES, i, 3);
-            }*/
-
+            //glUniform4f(vertexColorLocation, 0.0f, 0.0f, 0.0f, 1.0f);
+            //for (size_t i = 0; i < vertices.size(); i++) {
+            //    glDrawArrays(GL_LINES, i, 3);
+            //}
             glUniform4f(vertexColorLocation, getColor()[0], getColor()[1], getColor()[2], 1.0f);
             for (size_t i = 0; i < vertices.size(); i++) {
                 glDrawArrays(GL_TRIANGLES, i, 3);
