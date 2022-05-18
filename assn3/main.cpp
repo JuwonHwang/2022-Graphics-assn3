@@ -17,6 +17,7 @@
 #include "tank3d.h"
 #include "ground.h"
 #include "camera.h"
+#include "light.h"
 #include "util.h"
 
 unsigned int VAO;
@@ -24,6 +25,8 @@ unsigned int VAO;
 bool playing = true;
 bool all_pass = false;
 bool all_fail = false;
+bool diff_tex_mapping = true;
+bool normal_mapping = true;
 
 Camera camera;
 Sprite3D* cube = 0;
@@ -101,6 +104,15 @@ void keyboard(unsigned char key, int x, int y) {
         all_fail = !all_fail;
         tank->setWeak(all_fail);
         break;
+    case 'x': // Gouraud shading & Phong shading
+        gouraud = !gouraud;
+        break;
+    case 't': // Diffuse texture mapping
+        diff_tex_mapping = !diff_tex_mapping;
+        break;
+    case 'n': // Normal mapping
+        normal_mapping = !normal_mapping;
+        break;
     }
 
     glutPostRedisplay();
@@ -169,6 +181,12 @@ int main(int argc, char** argv)
 
     vertexColorLocation = glGetUniformLocation(program_shader, "ourColor");
     MVLoc = glGetUniformLocation(program_shader, "MV");
+    lightPos = glGetUniformLocation(program_shader, "LP");
+    ap = glGetUniformLocation(program_shader, "AP");
+    dp = glGetUniformLocation(program_shader, "DP");
+    sp = glGetUniformLocation(program_shader, "SP");
+    shn = glGetUniformLocation(program_shader, "Shininess");
+    gr = glGetUniformLocation(program_shader, "is_gouraud");
 
     init();
 

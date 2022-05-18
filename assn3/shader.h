@@ -9,6 +9,7 @@
 GLuint v_shader;
 GLuint f_shader;
 GLuint program_shader;
+bool gouraud = true;
 void setShaders();
 
 GLuint MatrixID;
@@ -21,7 +22,7 @@ void setShaders()
 
 	v_shader = glCreateShader(GL_VERTEX_SHADER);
 	f_shader = glCreateShader(GL_FRAGMENT_SHADER);
-
+	
 	vs = textFileRead("vertex.shader");
 	fs = textFileRead("fragment.shader");
 
