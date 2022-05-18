@@ -19,6 +19,7 @@
 #include "camera.h"
 #include "light.h"
 #include "util.h"
+#include "light.h"
 
 unsigned int VAO;
 
@@ -33,6 +34,7 @@ Sprite3D* cube = 0;
 Tank3D* tank = 0;
 Tank3D* enemy = 0;
 Ground* ground = 0;
+Sun* sun = 0;
 
 void init(void) {
     tank = new Tank3D("tank", blue, Position(0, 0, 15), { &allGroups });
@@ -40,6 +42,7 @@ void init(void) {
     enemy->setAuto(true);
     enemy->rotate(glm::vec3(0, 180, 0));
     ground = new Ground("ground", grey, Position(0, 0, 0), { &allGroups }, "", { 20,20 });
+    sun = new Sun();
 }
 
 
@@ -120,6 +123,7 @@ void keyboard(unsigned char key, int x, int y) {
 
 void timer(int value) {
     checkAllCollision(allGroups);
+    sun->update();
     for (size_t i = 0; i < allGroups.size(); i++)
     {
         if (allGroups[i] != NULL) {

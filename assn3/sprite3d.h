@@ -28,7 +28,8 @@ private:
     std::vector<std::vector<Sprite3D*>*> groups;
     std::vector<Sprite3D*> subSprite3Ds;
 
-    unsigned int VBO;
+    unsigned int vertexBuffer;
+    unsigned int normalBuffer;
     glm::mat4 mv;
 
 public:
@@ -47,7 +48,8 @@ public:
             _groups[i]->push_back(this);
         }
 
-        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &vertexBuffer);
+        glGenBuffers(1, &normalBuffer);
 
     }
 
@@ -62,7 +64,8 @@ public:
         for (size_t i = 0; i < subSprite3Ds.size(); i++) {
             subSprite3Ds[i]->kill();
         }
-        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &vertexBuffer);
+        glDeleteBuffers(1, &vertexBuffer);
         delete this;
     }
 
@@ -120,11 +123,17 @@ public:
         mv = glm::rotate(mv, roll * PI / 180, glm::vec3(1.0f, 0.0f, 0.0f));
         model_view_mat.push(mv);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0][0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0][0], GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
 
         glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(mv));
         glUniform4f(lightPos, 0.0f, 1.0f, 1.0f, 0.0f);
